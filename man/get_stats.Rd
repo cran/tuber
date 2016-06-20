@@ -4,10 +4,12 @@
 \alias{get_stats}
 \title{Get statistics of a Video}
 \usage{
-get_stats(video_id = NULL)
+get_stats(video_id = NULL, ...)
 }
 \arguments{
 \item{video_id}{Character. Id of the video. Required.}
+
+\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
 list with 5 elements: viewCount, likeCount, dislikeCount, favoriteCount, commentCount
@@ -21,6 +23,6 @@ get_stats(video_id="N708P-A45D0")
 }
 }
 \references{
-\url{https://console.developers.google.com/project}
+\url{https://developers.google.com/youtube/v3/docs/videos/list#parameters}
 }
 

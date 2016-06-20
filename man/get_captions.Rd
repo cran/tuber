@@ -4,12 +4,14 @@
 \alias{get_captions}
 \title{Get Captions of a Video}
 \usage{
-get_captions(video_id = NULL, lang = "en")
+get_captions(video_id = NULL, lang = "en", ...)
 }
 \arguments{
 \item{video_id}{id of the video; required; no default}
 
 \item{lang}{language of the caption; required; default is english ("en")}
+
+\item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
 captions for the video from one of the first track
@@ -23,6 +25,6 @@ get_captions(video_id="yJXTXN4xrI8")
 }
 }
 \references{
-\url{https://console.developers.google.com/project}
+\url{https://developers.google.com/youtube/v3/docs/captions/list}
 }
 
