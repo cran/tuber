@@ -4,10 +4,12 @@
 \alias{list_guidecats}
 \title{Get List of categories that can be associated with YouTube channels}
 \usage{
-list_guidecats(regionCode = NULL, ...)
+list_guidecats(regionCode = NULL, hl = NULL, ...)
 }
 \arguments{
-\item{regionCode}{Character. Required. Has to be a ISO 3166-1 alpha-2 code (see \url{https://www.iso.org/obp/ui/#search}).}
+\item{regionCode}{Character. Required. Has to be a ISO 3166-1 alpha-2 code (see \url{https://www.iso.org/obp/ui/#search})}
+
+\item{hl}{Language used for text values. Optional. Default is \code{en-US}. For other allowed language codes, see \code{\link{list_langs}}.}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }

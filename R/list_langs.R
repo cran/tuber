@@ -1,6 +1,7 @@
 #' List Languages That Youtube Currently Supports
 #' 
 #' @return data.frame with 3 columns: hl (two letter abbreviation), name (of the language), etag
+#' @param hl  Language used for text values. Optional. Default is \code{en-US}. For other allowed language codes, see \code{\link{list_langs}}.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 
 #' @export
@@ -10,9 +11,9 @@
 #' list_langs()
 #' }
 
-list_langs <- function (...) {
+list_langs <- function (hl=NULL, ...) {
 
-	querylist <- list(part="snippet")
+	querylist <- list(part="snippet", hl = hl)
 
 	res <- tuber_GET("i18nLanguages", querylist)
 

@@ -8,10 +8,10 @@
 #' @references \url{https://developers.google.com/youtube/v3/docs/channels/list}
 #' @examples
 #' \dontrun{
-#' get_channel(channel_id="UChTJTbr5kf3hYazJZO-euHg")
+#' get_channel_stats(channel_id="UChTJTbr5kf3hYazJZO-euHg")
 #' }
 
-get_channel <- function (channel_id=NULL, ...) {
+get_channel_stats <- function (channel_id=NULL, ...) {
 
 	if (is.null(channel_id)) stop("Must specify a channel ID")
 
@@ -28,5 +28,5 @@ get_channel <- function (channel_id=NULL, ...) {
 	cat('No. of Subscribers', res1$subscriberCount, "\n")
 	cat('No. of Videos', res1$videoCount, "\n")
  
-	return(invisible(res))
+	res
 }

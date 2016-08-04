@@ -1,6 +1,6 @@
 Package: tuber
 Title: Client for the YouTube API
-Version: 0.2.1
+Version: 0.3.0
 Authors@R: person("Gaurav", "Sood", email = "gsood07@gmail.com", role = c("aut", "cre"))
 Maintainer: Gaurav Sood <gsood07@gmail.com>
 Description: Get comments posted on YouTube videos, information on how many 
@@ -17,7 +17,7 @@ VignetteBuilder: knitr
 Suggests: knitr (>= 1.11), testthat, rmarkdown
 RoxygenNote: 5.0.1
 NeedsCompilation: no
-Packaged: 2016-06-20 19:28:16 UTC; gsood
+Packaged: 2016-08-04 20:15:18 UTC; gsood
 Author: Gaurav Sood [aut, cre]
 Repository: CRAN
-Date/Publication: 2016-06-20 23:18:52
+Date/Publication: 2016-08-04 23:02:44
