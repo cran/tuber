@@ -33,3 +33,27 @@
 #  # First comment
 #  res$items[[1]]$snippet$topLevelComment$snippet$textDisplay
 
+## ---- eval=FALSE, get_channel_vids_stats---------------------------------
+#  
+#  a <- list_channel_resources(filter = c(channel_id = "UCT5Cx1l4IS3wHkJXNyuj4TA"), part="contentDetails")
+#  
+#  # Uploaded playlists:
+#  playlist_id <- a$items[[1]]$contentDetails$relatedPlaylists$uploads
+#  
+#  # Get videos on the playlist
+#  vids <- get_playlist_items(filter= c(playlist_id=playlist_id))
+#  
+#  # Video ids
+#  vid_ids <- as.vector(unlist(sapply(vids$items, "[", "contentDetails")))
+#  
+#  # get stats:
+#  res <- data.frame()
+#  for (i in vid_ids) {
+#  
+#  	temp <- get_stats(i)
+#  	temp$vid_id <- i
+#  	res  <- rbind(res, temp)
+#  }
+#  
+#  res
+

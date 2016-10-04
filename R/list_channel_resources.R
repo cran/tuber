@@ -1,6 +1,12 @@
 #' Returns List of Requested Channel Resources
 #' 
-#' @param channel_name string, channel name, required
+#' @param filter string; Required.
+#' named vector of length 1
+#' potential names of the entry in the vector: 
+#' \code{category_id}: YouTube guide category that returns channels associated with that category
+#' \code{username}:  YouTube username that returns channel associated with that username.
+#' \code{channel_id}: a comma-separated list of the YouTube channel ID(s) for the resource(s) that are being retrieved 
+#' 
 #' @param part a comma separated list of channel resource properties that response will include string. Required. 
 #' One of the following: \code{auditDetails, brandingSettings, contentDetails, contentOwnerDetails, id, invideoPromotion, localizations, snippet, statistics, status, topicDetails}.
 #' Default is \code{contentDetails}.
@@ -12,20 +18,31 @@
 #' @return list
 #' @export
 #' @references \url{https://developers.google.com/youtube/v3/docs/channels/list}
+#' 
 #' @examples
+#' 
 #' \dontrun{
-#' list_channel_videos("latenight")
-#' list_channel_videos("latenight", part="id, contentDetails")
-#' list_channel_videos("latenight", part="id, contentDetails", max_results=10)
+#' list_channel_resources(filter = c(channel_id = "UCT5Cx1l4IS3wHkJXNyuj4TA"))
+#' list_channel_resources(filter = c(username = "latenight"), part="id, contentDetails")
+#' list_channel_resources(filter = c(username = "latenight"), part="id, contentDetails", 
+#' max_results=10)
 #' }
 
-list_channel_resources <- function (channel_name=NULL, part="contentDetails", max_results = 50, page_token = NULL, hl= NULL, ...) 
+list_channel_resources <- function (filter=NULL, part="contentDetails", max_results = 50, page_token = NULL, hl= NULL, ...) 
 {
-	 if (max_results < 0 | max_results > 50) stop("max_results only takes a value between 0 and 50")
+	if (max_results < 0 | max_results > 50) stop("max_results only takes a value between 0 and 50")
+	if (!(names(filter) %in% c("category_id", "username", "channel_id"))) stop("filter can only take one of three values: category_id, username or channel_id.")
+	if ( length(filter) != 1) stop("filter must be a vector of length 1.")
 
-     querylist <- list(part = part, forUsername = channel_name, max_results = max_results, page_token = page_token, hl= hl)
-     res <- tuber_GET("channels", querylist, ...)
+	translate_filter   <- c(channel_id = 'id', category_id = 'categoryId', username = 'forUsername')
+	yt_filter_name     <- as.vector(translate_filter[match(names(filter), names(translate_filter))])
+	names(filter)      <- yt_filter_name
+
+    querylist <- list(part = part, maxResults = max_results, pageToken = page_token, hl= hl)
+    querylist <- c(querylist, filter)
+
+    res <- tuber_GET("channels", querylist, ...)
     
-     return(invisible(res))
+    return(invisible(res))
 }
 

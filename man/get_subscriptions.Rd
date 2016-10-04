@@ -4,12 +4,16 @@
 \alias{get_subscriptions}
 \title{Get Subscriptions}
 \usage{
-get_subscriptions(channel_id = NULL, part = "contentDetails",
+get_subscriptions(filter = NULL, part = "contentDetails",
   max_results = 50, for_channel_id = NULL, order = NULL,
   page_token = NULL, ...)
 }
 \arguments{
-\item{channel_id}{ID of the channel. Character. Required.}
+\item{filter}{string; Required.
+named vector of length 1
+potential names of the entry in the vector: 
+\code{channel_id}: ID of the channel. Required. No default.
+\code{subscription_id}: YouTube subscription ID}
 
 \item{part}{Part of the resource requested. Required. Character. 
 A comma separated list of one or more of the following: \code{contentDetails, id, snippet, subscriberSnippet}. e.g. "id, snippet", "id", etc. Default: \code{contentDetails}.}
@@ -25,17 +29,17 @@ A comma separated list of one or more of the following: \code{contentDetails, id
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-captions for the video from one of the first track
+named list of subscriptions
 }
 \description{
 Get Subscriptions
 }
 \examples{
 \dontrun{
-get_subscriptions(channel_id="UChTJTbr5kf3hYazJZO-euHg")
+get_subscriptions(filter=c(channel_id="UChTJTbr5kf3hYazJZO-euHg"))
 }
 }
 \references{
-\url{https://developers.google.com/youtube/v3/docs/playlists/list}
+\url{https://developers.google.com/youtube/v3/docs/subscriptions/list}
 }
 

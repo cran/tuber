@@ -14,14 +14,12 @@
 get_stats <- function (video_id=NULL, ...) {
 
 	if (is.null(video_id)) stop("Must specify a video ID")
-
-	yt_check_token()
 	
 	querylist <- list(part="statistics", id = video_id)
     
     res <- tuber_GET("videos", querylist, ...)
     res <- res$items[[1]]$statistics
-    #res <- res$items[[1]]
+
 	cat('No. of Views', res$viewCount, "\n")
 	cat('No. of Likes', res$likeCount, "\n")
 	cat('No. of Dislikes', res$dislikeCount, "\n")
