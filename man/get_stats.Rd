@@ -12,13 +12,16 @@ get_stats(video_id = NULL, ...)
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-list with 5 elements: viewCount, likeCount, dislikeCount, favoriteCount, commentCount
+list with 6 elements: id, viewCount, likeCount, dislikeCount, favoriteCount, commentCount
 }
 \description{
 Get statistics of a Video
 }
 \examples{
 \dontrun{
+
+# Set API token via yt_oauth() first
+
 get_stats(video_id="N708P-A45D0")
 }
 }

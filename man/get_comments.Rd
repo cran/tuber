@@ -31,13 +31,22 @@ following: \code{id, snippet}. e.g., "id, snippet", "id" Default: \code{snippet}
 Nested named list. The entry \code{items} is a list of comments along with meta information. 
 Within each of the \code{items} is an item \code{snippet} which has an item \code{topLevelComment$snippet$textDisplay}
 that contains the actual comment.
+
+When filter is comment_id, and simplify is TRUE, and there is a correct comment id, it returns a data.frame with 
+following cols:  id, authorDisplayName, authorProfileImageUrl, authorChannelUrl, value, textDisplay, canRate, viewerRating, likeCount
+publishedAt, updatedAt
 }
 \description{
 Get Comments
 }
 \examples{
 \dontrun{
+
+# Set API token via yt_oauth() first
+
 get_comments(filter = c(comment_id="z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk"))
+get_comments(filter = 
+c(comment_id="z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk, z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk"))
 }
 }
 \references{
