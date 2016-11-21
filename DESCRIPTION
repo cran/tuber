@@ -1,6 +1,6 @@
 Package: tuber
 Title: Client for the YouTube API
-Version: 0.6.0
+Version: 0.7.0
 Authors@R: person("Gaurav", "Sood", email = "gsood07@gmail.com", role = c("aut", "cre"))
 Maintainer: Gaurav Sood <gsood07@gmail.com>
 Description: Get comments posted on YouTube videos, information on how many 
@@ -12,12 +12,12 @@ BugReports: http://github.com/soodoku/tuber/issues
 Depends: R (>= 3.2.0)
 License: MIT + file LICENSE
 LazyData: true
-Imports: httr
+Imports: httr, plyr
 VignetteBuilder: knitr
 Suggests: knitr (>= 1.11), testthat, rmarkdown, xml2
 RoxygenNote: 5.0.1
 NeedsCompilation: no
-Packaged: 2016-11-10 22:09:17 UTC; gsood
+Packaged: 2016-11-21 17:38:51 UTC; gsood
 Author: Gaurav Sood [aut, cre]
 Repository: CRAN
-Date/Publication: 2016-11-11 00:08:01
+Date/Publication: 2016-11-21 21:22:50

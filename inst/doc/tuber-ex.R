@@ -20,18 +20,18 @@
 #  get_stats(video_id="N708P-A45D0")
 
 ## ---- eval=FALSE, getdetails---------------------------------------------
-#  get_details(video_id="N708P-A45D0")
+#  get_video_details(video_id="N708P-A45D0")
 
 ## ---- eval=FALSE, getcaptions--------------------------------------------
 #  get_captions(video_id="yJXTXN4xrI8")
 
 ## ---- eval=FALSE, searchvids---------------------------------------------
-#  yt_search("Barack Obama")
+#  res <- yt_search("Barack Obama")
+#  head(res[, 1:3])
 
 ## ---- eval=FALSE, get_comments-------------------------------------------
-#  res <- get_comments(video_id="N708P-A45D0")
-#  # First comment
-#  res$items[[1]]$snippet$topLevelComment$snippet$textDisplay
+#  res <- get_comment_threads(c(video_id="N708P-A45D0"))
+#  head(res)
 
 ## ---- eval=FALSE, get_channel_vids_stats---------------------------------
 #  
@@ -55,5 +55,5 @@
 #  	res  <- rbind(res, temp)
 #  }
 #  
-#  res
+#  head(res)
 

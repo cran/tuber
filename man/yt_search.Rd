@@ -9,7 +9,7 @@ yt_search(term = NULL, max_results = 50, channel_id = NULL,
   location = NULL, location_radius = NULL, published_after = NULL,
   published_before = NULL, video_definition = "any",
   video_caption = "any", video_license = "any", video_syndicated = "any",
-  video_type = "any", simplify = TRUE, ...)
+  video_type = "any", simplify = TRUE, page_token = NULL, ...)
 }
 \arguments{
 \item{term}{Character. Search term; required; no default}
@@ -46,17 +46,30 @@ license), 'youtube' (return videos with standard YouTube license).}
 
 \item{simplify}{Boolean. Return a data.frame if TRUE. Default is TRUE. If FALSE, it returns a list that carries additional information.}
 
+\item{page_token}{specific page in the result set that should be returned, optional}
+
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
 \value{
-data.frame with 7 elements: publishedAt, channelId, title, description, thumbnails, channelTitle, liveBroadcastContent
+data.frame with 15 elements: \code{publishedAt, channelId, title, description, thumbnails.default.url, thumbnails.default.width, 
+thumbnails.default.height, thumbnails.medium.url, thumbnails.medium.width, thumbnails.medium.height, thumbnails.high.url, thumbnails.high.width, 
+thumbnails.high.height, channelTitle, liveBroadcastContent}
 }
 \description{
 Search for videos, channels and playlists. (By default, the function searches for videos.)
 }
 \examples{
 \dontrun{
+
+# Set API token via yt_oauth() first
+
 yt_search(term="Barack Obama")
+yt_search(term="Barack Obama", published_after="2016-10-01T00:00:00Z")
+yt_search(term="Barack Obama", published_before="2016-09-01T00:00:00Z")
+yt_search(term="Barack Obama", published_before="2016-03-01T00:00:00Z", 
+                               published_after="2016-02-01T00:00:00Z")
+yt_search(term="Barack Obama", published_before = "2016-02-10T00:00:00Z", 
+                               published_after="2016-01-01T00:00:00Z")
 }
 }
 \references{

@@ -4,8 +4,8 @@
 \alias{get_comments}
 \title{Get Comments}
 \usage{
-get_comments(filter = NULL, part = "snippet", text_format = "html",
-  simplify = TRUE, max_results = 100, page_token = NULL, ...)
+get_comments(filter = NULL, part = "snippet", max_results = 100,
+  text_format = "html", page_token = NULL, simplify = TRUE, ...)
 }
 \arguments{
 \item{filter}{string; Required.
@@ -15,15 +15,15 @@ potential names of the entry in the vector:
 \code{parent_id}: parent ID.}
 
 \item{part}{Comment resource requested. Required. Comma separated list of one or more of the 
-following: \code{id, snippet}. e.g., "id, snippet", "id" Default: \code{snippet}.}
-
-\item{text_format}{Data Type: Character. Default is "html". Only takes "html" or "plainText." Optional.}
-
-\item{simplify}{Data Type: Boolean. Default is TRUE. If TRUE, the function returns a data frame. Else a list with all the information returned.}
+following: \code{id, snippet}. e.g., \code{"id, snippet"}, \code{"id"}, etc. Default: \code{snippet}.}
 
 \item{max_results}{Maximum number of items that should be returned. Integer. Optional. Can be between 20 and 100. Default is 100.}
 
+\item{text_format}{Data Type: Character. Default is \code{"html"}. Only takes \code{"html"} or \code{"plainText"}. Optional.}
+
 \item{page_token}{Specific page in the result set that should be returned. Optional.}
+
+\item{simplify}{Data Type: Boolean. Default is TRUE. If TRUE, the function returns a data frame. Else a list with all the information returned.}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
@@ -32,9 +32,10 @@ Nested named list. The entry \code{items} is a list of comments along with meta 
 Within each of the \code{items} is an item \code{snippet} which has an item \code{topLevelComment$snippet$textDisplay}
 that contains the actual comment.
 
-When filter is comment_id, and simplify is TRUE, and there is a correct comment id, it returns a data.frame with 
-following cols:  id, authorDisplayName, authorProfileImageUrl, authorChannelUrl, value, textDisplay, canRate, viewerRating, likeCount
-publishedAt, updatedAt
+When filter is \code{comment_id}, and \code{simplify} is \code{TRUE}, and there is a correct comment id, it returns a \code{data.frame} with 
+following cols: 
+\code{id, authorDisplayName, authorProfileImageUrl, authorChannelUrl, value, textDisplay, canRate, viewerRating, likeCount
+publishedAt, updatedAt}
 }
 \description{
 Get Comments
@@ -46,7 +47,8 @@ Get Comments
 
 get_comments(filter = c(comment_id="z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk"))
 get_comments(filter = 
-c(comment_id="z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk, z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk"))
+c(comment_id="z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk, 
+		         z13dh13j5rr0wbmzq04cifrhtuypwl4hsdk"))
 }
 }
 \references{

@@ -6,7 +6,7 @@
 #' information.
 #' 
 #' @param video_id ID of the video whose captions are requested. Required. No default.
-#' @param lang  Language of the caption; required; default is english ("en")
+#' @param lang  Language of the caption; required; default is \code{"en"} (English)
 #' @param id    String. id of the caption track that is being retrieved
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #' 
@@ -25,7 +25,7 @@
 
 get_captions <- function (video_id=NULL, lang = "en", id = NULL, ...) {
 
-	if (!is.character(video_id) & !is.character(id)) stop("Must specify a video_id or id.")
+	if (!is.character(video_id) & !is.character(id)) stop("Must specify a valid video_id or id.")
 
 	# Try getting captions directly
 	req <- GET(paste0("http://video.google.com/timedtext?lang=", lang, "&v=", video_id))

@@ -13,9 +13,9 @@ get_channel_stats(channel_id = NULL, ...)
 }
 \value{
 nested named list with top element names:
-kind, etag, id, snippet (list of details of the channel including title), statistics (list of 5)
+\code{kind, etag, id, snippet (list of details of the channel including title), statistics (list of 5)}
 
-If the channel_id is mistyped or there is no information, an empty list is returned
+If the \code{channel_id} is mistyped or there is no information, an empty list is returned
 }
 \description{
 Get statistics of a Channel
@@ -25,7 +25,8 @@ Get statistics of a Channel
 
 # Set API token via yt_oauth() first
 
-get_channel_stats(channel_id="UChTJTbr5kf3hYazJZO-euHg")
+get_channel_stats(channel_id="UCMtFAi84ehTSYSE9XoHefig")
+get_channel_stats(channel_id="UCMtFAi84ehTSYSE9Xo") # Incorrect channel ID
 }
 }
 \references{
