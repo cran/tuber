@@ -4,7 +4,8 @@
 \alias{get_playlists}
 \title{Get Playlists}
 \usage{
-get_playlists(filter = NULL, part = "contentDetails", max_results = 50,
+get_playlists(filter = NULL, part = c("contentDetails", "id",
+  "localizations", "player", "snippet", "status"), max_results = 50,
   hl = NULL, page_token = NULL, simplify = TRUE, ...)
 }
 \arguments{
@@ -47,4 +48,3 @@ get_playlists(filter=c(channel_id="UCMtFAi84ehTSYSE9X")) # incorrect Channel ID
 \references{
 \url{https://developers.google.com/youtube/v3/docs/playlists/list}
 }
-
