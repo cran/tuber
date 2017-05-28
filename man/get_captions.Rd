@@ -2,16 +2,16 @@
 % Please edit documentation in R/get_captions.R
 \name{get_captions}
 \alias{get_captions}
-\title{Get Captions of a Video}
+\title{Get Particular Caption Track}
 \usage{
-get_captions(video_id = NULL, lang = "en", id = NULL, ...)
+get_captions(id = NULL, lang = "en", format = "sbv", ...)
 }
 \arguments{
-\item{video_id}{ID of the video whose captions are requested. Required. No default.}
+\item{id}{String. Required. id of the caption track that is being retrieved}
 
-\item{lang}{Language of the caption; required; default is \code{"en"} (English)}
+\item{lang}{Optional. Default is \code{en}.}
 
-\item{id}{String. id of the caption track that is being retrieved}
+\item{format}{Optional. Default is \code{sbv}.}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
@@ -19,17 +19,17 @@ get_captions(video_id = NULL, lang = "en", id = NULL, ...)
 String.
 }
 \description{
-A few of Youtube videos have caption tracks available from an older 
-YouTube API. If that caption track is available, this function returns that,
-Or it returns caption track specified by id resource. Check \code{\link{list_caption_tracks}} for more
-information.
+For getting captions from the v3 API, you must specify the id resource. 
+Check \code{\link{list_caption_tracks}} for more information.
 }
 \examples{
 \dontrun{
 
 # Set API token via yt_oauth() first
 
-get_captions(video_id="yJXTXN4xrI8")
-get_captions(id="y3ElXcEME3lSISz6izkWVT5GvxjPu8pA")
+get_captions(id = "y3ElXcEME3lSISz6izkWVT5GvxjPu8pA")
 }
+}
+\references{
+\url{https://developers.google.com/youtube/v3/docs/captions/download}
 }

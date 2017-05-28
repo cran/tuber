@@ -1,3 +1,14 @@
+# version 0.9.0
+
+* Extensive linting. Passes expect_lint_free
+* Removed support for caption tracks from old Youtube API as client should only be for V3. Changed the get_captions API.
+* support the deletes
+* translate_filter in get_comment_threads also supports pagetoken, which it didn't.
+* removes cats (prints) from get_stats based on user feedback
+* list_channel_videos now supports getting all the videos from the playlists
+* get_playlist_items supports simplify, defaults to simplify, and also allows getting all the videos from the playlist easily.
+* get_comment_threads allows getting all the comment_threads
+
 # version 0.8.0 
 
 * get_all --- iterate through the results and get all supported for various functions. supported for yt_search(). prints removed from yt_search()
