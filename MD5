@@ -1,7 +1,7 @@
-2ac801ec77b6504fe530511bd6baab2d *DESCRIPTION
+afdf75205a37e491241341fc331e4470 *DESCRIPTION
 c0c22ab45b48282b18e7b4648793760e *LICENSE
 3e8dcc95254e581af1cb2a9a94ab5241 *NAMESPACE
-3f3a55ae3953d5a19580727730a57339 *NEWS.md
+d068b299c1e222000b759a76b5218481 *NEWS.md
 ee18f6fbacdf9e0ecfb15f08f19abe6c *R/delete_captions.R
 b43de5562282493160ee0b10d2f3e35c *R/delete_channel_sections.R
 76bf2971ad204992f8a615c697697ff8 *R/delete_comments.R
@@ -12,7 +12,7 @@ ccae506ab3132749260270b4d3e21bc5 *R/delete_videos.R
 f33bc3842cf7be7b193d4ddc26b83bab *R/get_channel_stats.R
 f20d74c07d47be709eab2670018a6e00 *R/get_comment_threads.R
 9a1301099de36cce48bc00f9b6486986 *R/get_comments.R
-90063e5c39fbe413ea2f4abc255bcbc0 *R/get_playlist_items.R
+66c66e127c915464a7e4fe480dc11e8a *R/get_playlist_items.R
 724eb6255698e5c67f800b24862cff63 *R/get_playlists.R
 806e015373d96dffd6a1c5505cedaafb *R/get_related_videos.R
 bba1e78bacb5bd73d00015b2b3fd30dc *R/get_stats.R
@@ -23,10 +23,10 @@ ca9dc4500f20876a9cd2afe7b71f35c6 *R/list_caption_tracks.R
 1dceae3198398feb10d8932458233a5c *R/list_channel_activities.R
 d456cc9be5217ca44f7f0a4ebe409a80 *R/list_channel_resources.R
 01a87b70da7a26008ad45f43540b5f75 *R/list_channel_sections.R
-a5e4c332403929043bc066dea67f76b6 *R/list_channel_videos.R
+3f74c1fa8202e91a01965a5c3ec640b5 *R/list_channel_videos.R
 2faaea8785e66e3456e22ab1061a753b *R/list_guidecats.R
-c60a32e783e68fd79115648a03d175a4 *R/list_langs.R
-f493322815bfe428e50a3e6a5516ec0b *R/list_regions.R
+7917fdf014b6848b8b7ee36fba6943ce *R/list_langs.R
+24199fd406a6b97fba5b8b8193304acd *R/list_regions.R
 e35d28e1cb4e9c0cdc2127209a77ff59 *R/list_videocats.R
 df986e6dc8e5502ad5ba68e8b64164d1 *R/list_videos.R
 0bf81efde3f79d66615ae3a2afecdd57 *R/tuber.R
@@ -34,11 +34,11 @@ df986e6dc8e5502ad5ba68e8b64164d1 *R/list_videos.R
 9bae7c984c4047c58fe1ff4b0302ac96 *R/yt_search.R
 04f5d20e8d8c892eb0151f2d9454ad43 *R/yt_topic_search.R
 bf6056dacab9bc68ca52fbd8c666320a *README.md
-c2cd55bc4e97f1121e50daad5a7b9b9e *build/vignette.rds
+69925ca6e642c4f48485d2f4021d1b07 *build/vignette.rds
 50ed416e5c60a1d3a5b743a526109ccc *inst/CITATION
 34b8fe6ddb8ae764ad6b0d267ba50983 *inst/doc/tuber-ex.R
 4e43bf3f59e9fff46209dda0e52397c9 *inst/doc/tuber-ex.Rmd
-3dc72af04904a7365922a5f3451792fb *inst/doc/tuber-ex.html
+f1a7f399958b391f258ae6cd9ba4e42d *inst/doc/tuber-ex.html
 17867aec501fe5ffe365d35df17b63fa *man/delete_captions.Rd
 07cf1d865333e349b9f3c6dfb256cfd5 *man/delete_channel_sections.Rd
 30a17dff68e99845bd6c81102605e21e *man/delete_comments.Rd
@@ -49,7 +49,7 @@ adcfd8f1348a6f937b957e413bca33c7 *man/delete_playlists.Rd
 10212aaec1413941744824627e1a2be6 *man/get_channel_stats.Rd
 15a507d831b49b9382f6e3f9d7b375b8 *man/get_comment_threads.Rd
 b6d895f7f2057c1a1552b42392c49fd9 *man/get_comments.Rd
-f71d2f304b2b8419fdb4cf776b5829a6 *man/get_playlist_items.Rd
+bd60ca525950cc5c4d02f9bc1cc9dbd6 *man/get_playlist_items.Rd
 2ce5cdb6dc4e0ba752a2e921103836e9 *man/get_playlists.Rd
 cbf2e46cf9306ffd462da2cd8d8788e7 *man/get_related_videos.Rd
 053abd371df73b359fd8d1fa8fc5e89b *man/get_stats.Rd
@@ -60,7 +60,7 @@ cbf2e46cf9306ffd462da2cd8d8788e7 *man/get_related_videos.Rd
 c979e0b8f95a29e43de35278213a871a *man/list_channel_activities.Rd
 b0d1afd859c46e12d7e5900679281f66 *man/list_channel_resources.Rd
 6c977226cbb266cd02d1b273b0cfad6a *man/list_channel_sections.Rd
-b1d830475830c0d28ea923683fa42137 *man/list_channel_videos.Rd
+671cc2de760b4db5a1ef0def216356cc *man/list_channel_videos.Rd
 4fdc95a8a65a706315c533a5c9e157d5 *man/list_guidecats.Rd
 3daf4a4ce3797d5d5ab8295163b48963 *man/list_langs.Rd
 5cb1870b3265603979d3252b43d84f84 *man/list_regions.Rd
