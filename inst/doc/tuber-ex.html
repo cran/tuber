@@ -12,7 +12,7 @@
 
 <meta name="author" content="Gaurav Sood" />
 
-<meta name="date" content="2017-11-19" />
+<meta name="date" content="2018-02-02" />
 
 <title>Using tuber</title>
 
@@ -70,12 +70,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Using tuber</h1>
 <h4 class="author"><em>Gaurav Sood</em></h4>
-<h4 class="date"><em>2017-11-19</em></h4>
+<h4 class="date"><em>2018-02-02</em></h4>
 
 
 
-<div id="tuber-access-youtube-via-r" class="section level2">
-<h2>tuber: Access YouTube via R</h2>
+<div id="tuber-access-youtube-from-r" class="section level2">
+<h2>tuber: Access YouTube from R</h2>
 <div id="install-load-the-package" class="section level3">
 <h3>Install, Load the package</h3>
 <p>To install the latest version from CRAN:</p>
@@ -232,7 +232,8 @@ devtools::<span class="kw">install_github</span>(<span class="st">&quot;soodoku/
 </div>
 <div id="get-statistics-of-all-the-videos-in-a-channel" class="section level3">
 <h3>Get statistics of all the videos in a channel</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a &lt;-<span class="st"> </span><span class="kw">list_channel_resources</span>(<span class="dt">filter =</span> <span class="kw">c</span>(<span class="dt">channel_id =</span> <span class="st">&quot;UCT5Cx1l4IS3wHkJXNyuj4TA&quot;</span>), <span class="dt">part=</span><span class="st">&quot;contentDetails&quot;</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
+a &lt;-<span class="st"> </span><span class="kw">list_channel_resources</span>(<span class="dt">filter =</span> <span class="kw">c</span>(<span class="dt">channel_id =</span> <span class="st">&quot;UCT5Cx1l4IS3wHkJXNyuj4TA&quot;</span>), <span class="dt">part=</span><span class="st">&quot;contentDetails&quot;</span>)
 
 <span class="co"># Uploaded playlists:</span>
 playlist_id &lt;-<span class="st"> </span>a$items[[<span class="dv">1</span>]]$contentDetails$relatedPlaylists$uploads
