@@ -12,7 +12,7 @@
 
 <meta name="author" content="Gaurav Sood" />
 
-<meta name="date" content="2018-02-02" />
+<meta name="date" content="2018-02-13" />
 
 <title>Using tuber</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Using tuber</h1>
 <h4 class="author"><em>Gaurav Sood</em></h4>
-<h4 class="date"><em>2018-02-02</em></h4>
+<h4 class="date"><em>2018-02-13</em></h4>
 
 
 
@@ -242,25 +242,25 @@ playlist_id &lt;-<span class="st"> </span>a$items[[<span class="dv">1</span>]]$c
 vids &lt;-<span class="st"> </span><span class="kw">get_playlist_items</span>(<span class="dt">filter=</span> <span class="kw">c</span>(<span class="dt">playlist_id=</span>playlist_id)) 
 
 <span class="co"># Video ids</span>
-vid_ids &lt;-<span class="st"> </span><span class="kw">as.vector</span>(<span class="kw">unlist</span>(<span class="kw">sapply</span>(vids$items, <span class="st">&quot;[&quot;</span>, <span class="st">&quot;contentDetails&quot;</span>)))
+vid_ids &lt;-<span class="st"> </span><span class="kw">as.vector</span>(vids$contentDetails.videoId)
 
-<span class="co"># get stats:</span>
-res &lt;-<span class="st"> </span><span class="kw">data.frame</span>()
-for (i in vid_ids) {
+<span class="co"># Function to scrape stats for all vids</span>
+get_all_stats &lt;-<span class="st"> </span>function(id) {
+  <span class="kw">get_stats</span>(id)
+} 
 
-    temp &lt;-<span class="st"> </span><span class="kw">get_stats</span>(i)
-    temp$vid_id &lt;-<span class="st"> </span>i
-    res  &lt;-<span class="st"> </span><span class="kw">rbind</span>(res, temp)
-}
+<span class="co"># Get stats and convert results to data frame </span>
+res &lt;-<span class="st"> </span><span class="kw">lapply</span>(vid_ids, get_all_stats)
+res_df &lt;-<span class="st"> </span><span class="kw">do.call</span>(rbind, <span class="kw">lapply</span>(res, data.frame))
 
-<span class="kw">head</span>(res)</code></pre></div>
-<pre><code>##            id viewCount likeCount dislikeCount favoriteCount commentCount      vid_id
-## 1 91gZ4taDiDE       906         4            1             0            0 91gZ4taDiDE
-## 2 bHPCvSqTxn4       706         0            0             0            0 bHPCvSqTxn4
-## 3 h2UPH87kjhc       458         1            0             0            0 h2UPH87kjhc
-## 4 E2VtxjljZCE       391         0            0             0            0 E2VtxjljZCE
-## 5 5Ajfk620fA0    175000         5            0             0            0 5Ajfk620fA0
-## 6 PdI3HjulcA4       575         3            2             0            3 PdI3HjulcA4</code></pre>
+<span class="kw">head</span>(res_df)</code></pre></div>
+<pre><code>##            id viewCount likeCount dislikeCount favoriteCount commentCount
+## 1 91gZ4taDiDE       906         4            1             0            0 
+## 2 bHPCvSqTxn4       706         0            0             0            0 
+## 3 h2UPH87kjhc       458         1            0             0            0
+## 4 E2VtxjljZCE       391         0            0             0            0 
+## 5 5Ajfk620fA0    175000         5            0             0            0 
+## 6 PdI3HjulcA4       575         3            2             0            3</code></pre>
 </div>
 </div>
 

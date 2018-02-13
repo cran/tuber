@@ -50,16 +50,16 @@ knitr::opts_chunk$set(
 #  vids <- get_playlist_items(filter= c(playlist_id=playlist_id))
 #  
 #  # Video ids
-#  vid_ids <- as.vector(unlist(sapply(vids$items, "[", "contentDetails")))
+#  vid_ids <- as.vector(vids$contentDetails.videoId)
 #  
-#  # get stats:
-#  res <- data.frame()
-#  for (i in vid_ids) {
-#  
-#  	temp <- get_stats(i)
-#  	temp$vid_id <- i
-#  	res  <- rbind(res, temp)
+#  # Function to scrape stats for all vids
+#  get_all_stats <- function(id) {
+#    get_stats(id)
 #  }
 #  
-#  head(res)
+#  # Get stats and convert results to data frame
+#  res <- lapply(vid_ids, get_all_stats)
+#  res_df <- do.call(rbind, lapply(res, data.frame))
+#  
+#  head(res_df)
 

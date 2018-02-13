@@ -1,6 +1,6 @@
 Package: tuber
 Title: Client for the YouTube API
-Version: 0.9.3
+Version: 0.9.4
 Authors@R: c(person("Gaurav", "Sood", email = "gsood07@gmail.com", role = c("aut", "cre")),
              person("Kate", "Lyons", email = "k.lyons7@gmail.com", role = "ctb"))
 Maintainer: Gaurav Sood <gsood07@gmail.com>
@@ -18,8 +18,8 @@ VignetteBuilder: knitr
 Suggests: knitr (>= 1.11), testthat, rmarkdown, xml2, lintr
 RoxygenNote: 6.0.1
 NeedsCompilation: no
-Packaged: 2018-02-03 00:13:59 UTC; gsood
+Packaged: 2018-02-13 18:36:50 UTC; gsood
 Author: Gaurav Sood [aut, cre],
   Kate Lyons [ctb]
 Repository: CRAN
-Date/Publication: 2018-02-03 04:05:31 UTC
+Date/Publication: 2018-02-13 19:05:38 UTC

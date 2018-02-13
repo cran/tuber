@@ -1,14 +1,14 @@
-aacaebafe348ec7df2027b02cd706e0b *DESCRIPTION
+9a6506830ee32b1b1c7b50a19536961f *DESCRIPTION
 c0c22ab45b48282b18e7b4648793760e *LICENSE
 f89cd96d36778c24cf0fecb9223dde9e *NAMESPACE
-5898c4a418945037ee9d53d737c83e3c *NEWS.md
+de02ae9d0f08c3431d4300ac2f1d668a *NEWS.md
 ee18f6fbacdf9e0ecfb15f08f19abe6c *R/delete_captions.R
 b43de5562282493160ee0b10d2f3e35c *R/delete_channel_sections.R
 76bf2971ad204992f8a615c697697ff8 *R/delete_comments.R
 d9c2f3c8e3fe1ff04650707c227646bb *R/delete_playlist_items.R
 e75d5ff8bbb55a536c48f73627f3baee *R/delete_playlists.R
 ccae506ab3132749260270b4d3e21bc5 *R/delete_videos.R
-72999be5944976baee8e709093ba6ffe *R/get_all_comments.R
+8a2eea4218b025b73f13679e3b0a3413 *R/get_all_comments.R
 1bdec67773f0cd0f9ee44b1ecf5a1d0d *R/get_captions.R
 f33bc3842cf7be7b193d4ddc26b83bab *R/get_channel_stats.R
 f20d74c07d47be709eab2670018a6e00 *R/get_comment_threads.R
@@ -37,9 +37,9 @@ d0d10358799c312263c20c68c4648936 *R/yt_oauth.R
 24b3631234fa4840286d9fdd56e6d9b5 *README.md
 1ee6a3e8aad03d6ef0ac6e6aa3f711ec *build/vignette.rds
 50ed416e5c60a1d3a5b743a526109ccc *inst/CITATION
-52be021ad971133ef77934aba8011654 *inst/doc/tuber-ex.R
-3159809f1b2001e80499f8eb74134dae *inst/doc/tuber-ex.Rmd
-1d2535994527d46c2b1a67e77b73a270 *inst/doc/tuber-ex.html
+085f91e04ea14dbec68541e7e3bbeec8 *inst/doc/tuber-ex.R
+64cfe48ee1282751cbadc18ec7104ab7 *inst/doc/tuber-ex.Rmd
+367c86906ea26d59f066ad5f8bc10cf8 *inst/doc/tuber-ex.html
 17867aec501fe5ffe365d35df17b63fa *man/delete_captions.Rd
 07cf1d865333e349b9f3c6dfb256cfd5 *man/delete_channel_sections.Rd
 30a17dff68e99845bd6c81102605e21e *man/delete_comments.Rd
@@ -85,5 +85,5 @@ dab9bd89e1623cc17f2a039a631de7df *tests/testthat/test-list-channel-sections.R
 d45b85b0afae5374816bbe804f8df2f6 *tests/testthat/test-pkg-style.R
 2ad2b70eee7384c04bba9f8fd8b77f0b *tests/testthat/token_file.rds
 4f5b4579838959ca5ea0c9944bc87b21 *tests/testthat/token_file.rds.enc
-3159809f1b2001e80499f8eb74134dae *vignettes/tuber-ex.Rmd
+64cfe48ee1282751cbadc18ec7104ab7 *vignettes/tuber-ex.Rmd
 8c2f9f3aa217f996f47fed24f6706eda *vignettes/tuber-ex.md
