@@ -1,6 +1,6 @@
 Package: tuber
 Title: Client for the YouTube API
-Version: 0.9.4
+Version: 0.9.5
 Authors@R: c(person("Gaurav", "Sood", email = "gsood07@gmail.com", role = c("aut", "cre")),
              person("Kate", "Lyons", email = "k.lyons7@gmail.com", role = "ctb"))
 Maintainer: Gaurav Sood <gsood07@gmail.com>
@@ -13,13 +13,13 @@ BugReports: http://github.com/soodoku/tuber/issues
 Depends: R (>= 3.4.0)
 License: MIT + file LICENSE
 LazyData: true
-Imports: httr, plyr
+Imports: httr, plyr, dplyr, purrr
 VignetteBuilder: knitr
 Suggests: knitr (>= 1.11), testthat, rmarkdown, xml2, lintr
 RoxygenNote: 6.0.1
 NeedsCompilation: no
-Packaged: 2018-02-13 18:36:50 UTC; gsood
+Packaged: 2018-03-01 04:57:12 UTC; gsood
 Author: Gaurav Sood [aut, cre],
   Kate Lyons [ctb]
 Repository: CRAN
-Date/Publication: 2018-02-13 19:05:38 UTC
+Date/Publication: 2018-03-01 12:35:03 UTC

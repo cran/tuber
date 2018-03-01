@@ -35,7 +35,7 @@ get_all_comments <- function (video_id = NULL, ...) {
 
     querylist$pageToken <- page_token
     a_res <- tuber_GET("commentThreads", querylist, ...)
-    agg_res <- rbind(agg_res, process_page(a_res))
+    agg_res <- rbind(agg_res, process_page(a_res), stringsAsFactors = FALSE)
 
     page_token  <- a_res$nextPageToken
    }
@@ -50,8 +50,9 @@ process_page <- function(res = NULL) {
                                      }
                                      )
 
-  agg_res <- ldply(simple_res, rbind)
-  agg_res <- cbind(agg_res, id = sapply(res$items, `[[`, "id"))
+  agg_res <- map_df(simple_res, bind_rows)
+  agg_res <- cbind(agg_res, id = sapply(res$items, `[[`, "id"),
+                            stringsAsFactors = FALSE)
 
   agg_res$parentId <- NA
 
@@ -68,24 +69,26 @@ process_page <- function(res = NULL) {
 
     if (n_replies[i] == 1) {
 
-      replies_1  <- lapply(res$items[[i]]$replies$comments, function(x) c(unlist(x$snippet), id = x$id))
-      replies_1  <- ldply(replies_1, rbind)
+      replies_1  <- lapply(res$items[[i]]$replies$comments,
+                                  function(x) c(unlist(x$snippet), id = x$id))
+      replies_1  <- map_df(replies_1, bind_rows)
 
       if (nrow(replies_1) > 0 & ! ("moderationStatus" %in% names(replies_1))) {
         replies_1$moderationStatus <- NA
       }
-      agg_res    <- rbind(agg_res, replies_1)
-    } 
+      agg_res    <- rbind(agg_res, replies_1, stringsAsFactors = FALSE)
+    }
 
     if (n_replies[i] > 1) {
 
-      replies_1p  <- lapply(res$items[[i]]$replies$comments, function(x) c(unlist(x$snippet), id = x$id))
-      replies_1p  <- ldply(replies_1p, rbind)
+      replies_1p  <- lapply(res$items[[i]]$replies$comments,
+                                    function(x) c(unlist(x$snippet), id = x$id))
+      replies_1p  <- map_df(replies_1p, bind_rows)
 
       if (nrow(replies_1p) > 0 & ! ("moderationStatus" %in% names(replies_1p))) {
         replies_1p$moderationStatus <- NA
       }
-      agg_res     <- rbind(agg_res, replies_1p)
+      agg_res     <- rbind(agg_res, replies_1p, stringsAsFactors = FALSE)
     }
   }
   agg_res
