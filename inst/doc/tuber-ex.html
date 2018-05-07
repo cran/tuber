@@ -12,7 +12,7 @@
 
 <meta name="author" content="Gaurav Sood" />
 
-<meta name="date" content="2018-02-28" />
+<meta name="date" content="2018-05-06" />
 
 <title>Using tuber</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Using tuber</h1>
 <h4 class="author"><em>Gaurav Sood</em></h4>
-<h4 class="date"><em>2018-02-28</em></h4>
+<h4 class="date"><em>2018-05-06</em></h4>
 
 
 
@@ -82,7 +82,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&quot;tuber&quot;</span>)</code></pre></div>
 <p>The latest development version of the package will always be on GitHub. Instructions for installing the package from Github are provided below.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages('devtools')</span>
-devtools::<span class="kw">install_github</span>(<span class="st">&quot;soodoku/tuber&quot;</span>, <span class="dt">build_vignettes =</span> <span class="ot">TRUE</span>)</code></pre></div>
+devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;soodoku/tuber&quot;</span>, <span class="dt">build_vignettes =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <p>Next, load the package:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tuber)</code></pre></div>
 </div>
@@ -208,7 +208,7 @@ devtools::<span class="kw">install_github</span>(<span class="st">&quot;soodoku/
 <div id="search-videos" class="section level4">
 <h4>Search Videos</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res &lt;-<span class="st"> </span><span class="kw">yt_search</span>(<span class="st">&quot;Barack Obama&quot;</span>)
-<span class="kw">head</span>(res[, <span class="dv">1</span>:<span class="dv">3</span>])</code></pre></div>
+<span class="kw">head</span>(res[, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>])</code></pre></div>
 <pre><code>##                publishedAt                channelId                                                                           title
 ## 1 2016-09-06T11:20:20.000Z UC6CZwQv8cbZco3wOwtp7W2g             See How Obama Ignored Xi Jinping &amp; Welcomed PM Modi At G20 Summit !
 ## 2 2016-09-05T06:01:17.000Z UC6RJ7-PaXg6TIH2BzZfTV7w                                   PM Modi Meets Barack Obama at G20 Summit 2016
@@ -236,16 +236,16 @@ devtools::<span class="kw">install_github</span>(<span class="st">&quot;soodoku/
 a &lt;-<span class="st"> </span><span class="kw">list_channel_resources</span>(<span class="dt">filter =</span> <span class="kw">c</span>(<span class="dt">channel_id =</span> <span class="st">&quot;UCT5Cx1l4IS3wHkJXNyuj4TA&quot;</span>), <span class="dt">part=</span><span class="st">&quot;contentDetails&quot;</span>)
 
 <span class="co"># Uploaded playlists:</span>
-playlist_id &lt;-<span class="st"> </span>a$items[[<span class="dv">1</span>]]$contentDetails$relatedPlaylists$uploads
+playlist_id &lt;-<span class="st"> </span>a<span class="op">$</span>items[[<span class="dv">1</span>]]<span class="op">$</span>contentDetails<span class="op">$</span>relatedPlaylists<span class="op">$</span>uploads
 
 <span class="co"># Get videos on the playlist</span>
 vids &lt;-<span class="st"> </span><span class="kw">get_playlist_items</span>(<span class="dt">filter=</span> <span class="kw">c</span>(<span class="dt">playlist_id=</span>playlist_id)) 
 
 <span class="co"># Video ids</span>
-vid_ids &lt;-<span class="st"> </span><span class="kw">as.vector</span>(vids$contentDetails.videoId)
+vid_ids &lt;-<span class="st"> </span><span class="kw">as.vector</span>(vids<span class="op">$</span>contentDetails.videoId)
 
 <span class="co"># Function to scrape stats for all vids</span>
-get_all_stats &lt;-<span class="st"> </span>function(id) {
+get_all_stats &lt;-<span class="st"> </span><span class="cf">function</span>(id) {
   <span class="kw">get_stats</span>(id)
 } 
 

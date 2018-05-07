@@ -2,14 +2,17 @@
 % Please edit documentation in R/get_channel_stats.R
 \name{get_channel_stats}
 \alias{get_channel_stats}
+\alias{list_my_channel}
 \title{Get statistics of a Channel}
 \usage{
-get_channel_stats(channel_id = NULL, mine = FALSE, ...)
+get_channel_stats(channel_id = NULL, mine = NULL, ...)
+
+list_my_channel(...)
 }
 \arguments{
 \item{channel_id}{Character. Id of the channel}
 
-\item{mine}{Boolean. TRUE if you want to fetch stats of your own channel. Default is FALSE.}
+\item{mine}{Boolean. TRUE if you want to fetch stats of your own channel. Default is NULL.}
 
 \item{\dots}{Additional arguments passed to \code{\link{tuber_GET}}.}
 }
