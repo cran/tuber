@@ -1,3 +1,7 @@
+# version 0.9.8
+
+* bug fixes etc.
+
 # version 0.9.6
 
 * default of mine changed to NULL from FALSE thank to advice from Miguel Arribas
