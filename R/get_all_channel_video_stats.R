@@ -5,7 +5,9 @@
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #'
 #' @return nested named list with top element names:
-#' \code{kind, etag, id, snippet (list of details of the channel including title), statistics (list of 5)}
+#' \code{kind, etag, id,}
+#' \code{snippet (list of details of the channel including title)}
+#' \code{, statistics (list of 5)}
 #'
 #' If the \code{channel_id} is mistyped or there is no information, an empty list is returned
 #'
@@ -23,44 +25,53 @@
 #' }
 
 get_all_channel_video_stats <- function(channel_id = NULL, mine = FALSE, ...) {
+  if (!is.character(channel_id) && !identical(tolower(mine), "true")) {
+    stop("Must specify a valid channel ID or set mine = 'true'.")
+  }
 
-  if (!is.character(channel_id) & !identical(tolower(mine),  "true")) {
-          stop("Must specify a channel ID or specify mine = 'true'.")
-    }
+  channel_resources <- list_channel_resources(filter = list(channel_id = channel_id), part = "contentDetails")
+  playlist_id <- channel_resources$items$contentDetails$relatedPlaylists$uploads
 
-  a <- list_channel_resources(filter = c(channel_id = channel_id), part = "contentDetails")
+  playlist_items <- get_playlist_items(filter = list(playlist_id = playlist_id), max_results = 50)
+  vid_ids <- playlist_items$contentDetails$videoId
 
-  playlist_id <- a$items[[1]]$contentDetails$relatedPlaylists$uploads
-
-  vids <- get_playlist_items(filter = c(playlist_id = playlist_id), max_results = 100)
-
-  vid_ids <- as.vector(vids$contentDetails.videoId)
-
-  res <- lapply(vid_ids, function(x) get_stats(x))
+  res <- lapply(vid_ids, get_stats)
   details <- lapply(vid_ids, get_video_details)
-  res_df <- do.call(what = bind_rows, lapply(res, data.frame))
 
-  details_tot <- data.frame(id = NA, title = NA,
-                            publication_date = NA, description = NA,
-                            channel_id = NA, channel_title = NA)
+  res_df <- data.frame(id = unlist(lapply(res, `[[`, "id")),
+                       view_count = unlist(lapply(res, `[[`, "statistics$viewCount")),
+                       like_count = unlist(lapply(res, `[[`, "statistics$likeCount")),
+                       dislike_count = unlist(lapply(res, `[[`, "statistics$dislikeCount")),
+                       comment_count = unlist(lapply(res, `[[`, "statistics$commentCount")),
+                       stringsAsFactors = FALSE)
 
-  for (p in 1:length(details)) {
-    id <- details[[p]]$items[[1]]$id
-    title <- details[[p]]$items[[1]]$snippet$title
-    publication_date <- details[[p]]$items[[1]]$snippet$publishedAt
-    description <- details[[p]]$items[[1]]$snippet$description
-    channel_id <- details[[p]]$items[[1]]$snippet$channelId
-    channel_title <- details[[p]]$items[[1]]$snippet$channelTitle
+  details_df <- data.frame(id = character(),
+                           title = character(),
+                           publication_date = character(),
+                           description = character(),
+                           channel_id = character(),
+                           channel_title = character(),
+                           stringsAsFactors = FALSE)
 
-    detail <- data.frame(id = id, title = title,
-                         publication_date = publication_date, description = description,
-                         channel_id = channel_id, channel_title = channel_title)
-    details_tot <- rbind(detail, details_tot)
+  for (i in seq_along(details)) {
+    detail <- details[[i]]
+    if (length(detail$items) == 0) {
+      next
+    }
+    item <- detail$items[[1]]$snippet
+    detail_df <- data.frame(id = item$id,
+                            title = item$title,
+                            publication_date = if ("videoPublishedAt" %in% names(item)) item$videoPublishedAt else NA,
+                            description = item$description,
+                            channel_id = item$channelId,
+                            channel_title = item$channelTitle,
+                            stringsAsFactors = FALSE)
+    details_df <- rbind(details_df, detail_df)
   }
 
   res_df$url <- paste0("https://www.youtube.com/watch?v=", res_df$id)
 
-  res_df <- merge(details_tot, res_df, by = "id")
-
-  res_df
+  merged_df <- merge(details_df, res_df, by = "id")
+  return(merged_df)
 }
+

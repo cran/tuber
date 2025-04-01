@@ -2,94 +2,87 @@
 #'
 #' @param video_id string; Required.
 #' \code{video_id}: video ID.
-#'  
+#'
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
-#'  
-#' @return  
+#'
+#' @return
 #' a \code{data.frame} with the following columns:
-#' \code{authorDisplayName, authorProfileImageUrl, authorChannelUrl, authorChannelId.value, videoId, textDisplay,          
-#' canRate, viewerRating, likeCount, publishedAt, updatedAt, id, moderationStatus, parentId}
-#' 
+#' \code{authorDisplayName, authorProfileImageUrl, authorChannelUrl,}
+#' \code{ authorChannelId.value, videoId, textDisplay,
+#' canRate, viewerRating, likeCount, publishedAt, updatedAt,
+#' id, moderationStatus, parentId}
+#'
 #' @export
 #' @references \url{https://developers.google.com/youtube/v3/docs/commentThreads/list}
-#' 
+#'
 #' @examples
 #' \dontrun{
-#' 
+#'
 #' # Set API token via yt_oauth() first
-#' 
+#'
 #' get_all_comments(video_id = "a-UQz7fqR3w")
 #' }
 
-get_all_comments <- function (video_id = NULL, ...) {
-
-  querylist <- list(videoId = video_id, part = "id,replies,snippet", maxResults = 100)
-
-  res <- tuber_GET("commentThreads", querylist, ...)
-
+get_all_comments <- function(video_id = NULL, ...) {
+  querylist <- list(videoId = video_id, part = "id,replies,snippet")
+  res <- tuber_GET("commentThreads", query = querylist, ...)
   agg_res <- process_page(res)
+  page_token <- res$nextPageToken
 
-  page_token  <- res$nextPageToken
-
-  while ( is.character(page_token)) {
-
+  comment_list <- list(agg_res)  # Preallocate a list and store the initial result
+  
+  while (!is.null(page_token)) {
     querylist$pageToken <- page_token
-    a_res <- tuber_GET("commentThreads", querylist, ...)
-    agg_res <- rbind(agg_res, process_page(a_res), stringsAsFactors = FALSE)
-
-    page_token  <- a_res$nextPageToken
-   }
-
+    a_res <- tuber_GET("commentThreads", query = querylist, ...)
+    new_comments <- process_page(a_res)
+    comment_list <- c(comment_list, new_comments)  # Append new comments to the list
+    page_token <- a_res$nextPageToken
+  }
+  
+  agg_res <- do.call(rbind, comment_list)  # Combine all comments into a single data frame
   agg_res
 }
+
 
 process_page <- function(res = NULL) {
-
-  simple_res  <- lapply(res$items, function(x) {
-                                     unlist(x$snippet$topLevelComment$snippet)
-                                     }
-                                     )
-
-  agg_res <- map_df(simple_res, bind_rows)
-  agg_res <- cbind(agg_res, id = sapply(res$items, `[[`, "id"),
-                            stringsAsFactors = FALSE)
-
-  agg_res$parentId <- NA
-
-  if ( !("moderationStatus" %in% names(agg_res))) {
-    agg_res$moderationStatus <- NA
-  }
-
-  n_replies   <- sapply(res$items, function(x) {
-                                     unlist(x$snippet$totalReplyCount)
-                                     }
-                                     )
-
-  for (i in 1:length(n_replies)) {
-
-    if (n_replies[i] == 1) {
-
-      replies_1  <- lapply(res$items[[i]]$replies$comments,
-                                  function(x) c(unlist(x$snippet), id = x$id))
-      replies_1  <- map_df(replies_1, bind_rows)
-
-      if (nrow(replies_1) > 0 & ! ("moderationStatus" %in% names(replies_1))) {
-        replies_1$moderationStatus <- NA
+  num_comments <- length(res$items)
+  comment_list <- vector("list", length = num_comments)
+  
+  for (i in seq_len(num_comments)) {
+    comment <- res$items[[i]]
+    
+    comment_snippet <- comment$snippet$topLevelComment$snippet
+    comment_id <- comment$id
+    comment_parent_id <- NA
+    comment_moderation_status <- ifelse("moderationStatus" %in% names(comment_snippet),
+                                        comment_snippet$moderationStatus, NA)
+    
+    comment_data <- c(comment_snippet, id = comment_id, parentId = comment_parent_id,
+                      moderationStatus = comment_moderation_status)
+    
+    if (!is.null(comment$replies) && "comments" %in% names(comment$replies)) {
+      reply_items <- comment$replies$comments
+      
+      if (!is.null(reply_items) && length(reply_items) > 0) {
+        reply_data <- lapply(reply_items, function(reply) {
+          reply_snippet <- reply$snippet
+          reply_id <- reply$id
+          reply_parent_id <- comment_id
+          reply_moderation_status <- ifelse("moderationStatus" %in% names(reply_snippet),
+                                            reply_snippet$moderationStatus, NA)
+          
+          c(reply_snippet, id = reply_id, parentId = reply_parent_id,
+            moderationStatus = reply_moderation_status)
+        })
+        
+        comment_data <- rbind(comment_data, do.call(rbind, reply_data))
       }
-      agg_res    <- rbind(agg_res, replies_1, stringsAsFactors = FALSE)
     }
-
-    if (n_replies[i] > 1) {
-
-      replies_1p  <- lapply(res$items[[i]]$replies$comments,
-                                    function(x) c(unlist(x$snippet), id = x$id))
-      replies_1p  <- map_df(replies_1p, bind_rows)
-
-      if (nrow(replies_1p) > 0 & ! ("moderationStatus" %in% names(replies_1p))) {
-        replies_1p$moderationStatus <- NA
-      }
-      agg_res     <- rbind(agg_res, replies_1p, stringsAsFactors = FALSE)
-    }
+    
+    comment_list[[i]] <- comment_data
   }
+  
+  agg_res <- do.call(rbind, comment_list)
   agg_res
 }
+

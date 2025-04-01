@@ -12,78 +12,107 @@
 
 <meta name="author" content="Gaurav Sood" />
 
-<meta name="date" content="2020-06-10" />
+<meta name="date" content="2025-04-01" />
 
 <title>Using tuber</title>
 
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
 
 
-<style type="text/css">code{white-space: pre;}</style>
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
 <style type="text/css" data-origin="pandoc">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; position: absolute; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; }
-pre.numberSource a.sourceLine:empty
-  { position: absolute; }
-pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
-    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
 div.sourceCode
-  {  }
+{ }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
 </style>
 <script>
 // apply pandoc div.sourceCode style to pre.sourceCode instead
@@ -92,13 +121,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -106,6 +142,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   }
 })();
 </script>
+
 
 
 
@@ -303,7 +340,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Using tuber</h1>
 <h4 class="author">Gaurav Sood</h4>
-<h4 class="date">2020-06-10</h4>
+<h4 class="date">2025-04-01</h4>
 
 
 
@@ -312,23 +349,30 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div id="install-load-the-package" class="section level3">
 <h3>Install, Load the package</h3>
 <p>To install the latest version from CRAN:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&quot;tuber&quot;</span>)</a></code></pre></div>
-<p>The latest development version of the package will always be on GitHub. Instructions for installing the package from Github are provided below.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co"># install.packages('devtools')</span></a>
-<a class="sourceLine" id="cb2-2" data-line-number="2">devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;soodoku/tuber&quot;</span>, <span class="dt">build_vignettes =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;tuber&quot;</span>)</span></code></pre></div>
+<p>The latest development version of the package will always be on
+GitHub. Instructions for installing the package from Github are provided
+below.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;gojiplus/tuber&quot;</span>, <span class="at">build_vignettes =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <p>Next, load the package:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">library</span>(tuber)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">library</span>(tuber)</span></code></pre></div>
 </div>
 <div id="using-the-package" class="section level3">
 <h3>Using the package</h3>
-<p>To get going, get the application id and password from Google Developer Console (see <a href="https://developers.google.com/youtube/v3/getting-started" class="uri">https://developers.google.com/youtube/v3/getting-started</a>). Enable YouTube APIs. Create OAuth credentials, being sure to select ‘Other’ as your Application Type. Then set the application id and password via the <code>yt_oauth</code> function. For more information about YouTube OAuth, see <a href="https://developers.google.com/youtube/v3/guides/authentication">YouTube OAuth Guide</a>.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw">yt_oauth</span>(<span class="st">&quot;998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.com&quot;</span>, <span class="st">&quot;MbOSt6cQhhFkwETXKur-L9rN&quot;</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">## Waiting for authentication in browser...</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">## Press Esc/Ctrl + C to abort</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3">## Authentication complete.</a></code></pre></div>
+<p>To get going, get the application id and password from Google
+Developer Console (see <a href="https://developers.google.com/youtube/v3/getting-started">https://developers.google.com/youtube/v3/getting-started</a>).
+Enable YouTube APIs. Create OAuth credentials, being sure to select
+‘Other’ as your Application Type. Then set the application id and
+password via the <code>yt_oauth</code> function. For more information
+about YouTube OAuth, see <a href="https://developers.google.com/youtube/v3/guides/authentication">YouTube
+OAuth Guide</a>.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">yt_oauth</span>(<span class="st">&quot;998136489867-5t3tq1g7hbovoj46dreqd6k5kd35ctjn.apps.googleusercontent.com&quot;</span>, <span class="st">&quot;MbOSt6cQhhFkwETXKur-L9rN&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="do">## Waiting for authentication in browser...</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="do">## Press Esc/Ctrl + C to abort</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="do">## Authentication complete.</span></span></code></pre></div>
 <div id="get-statistics-of-a-video" class="section level4">
 <h4>Get Statistics of a Video</h4>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw">get_stats</span>(<span class="dt">video_id=</span><span class="st">&quot;N708P-A45D0&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">get_stats</span>(<span class="at">video_id=</span><span class="st">&quot;N708P-A45D0&quot;</span>)</span></code></pre></div>
 <pre><code>## No. of Views 525112 
 ## No. of Likes 5576 
 ## No. of Dislikes 3564 
@@ -337,11 +381,11 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="get-information-about-a-video" class="section level4">
 <h4>Get Information About a Video</h4>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw">get_video_details</span>(<span class="dt">video_id=</span><span class="st">&quot;N708P-A45D0&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">get_video_details</span>(<span class="at">video_id=</span><span class="st">&quot;N708P-A45D0&quot;</span>)</span></code></pre></div>
 </div>
 <div id="get-caption-of-a-video" class="section level4">
 <h4>Get Caption of a Video</h4>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw">get_captions</span>(<span class="dt">video_id=</span><span class="st">&quot;yJXTXN4xrI8&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">get_captions</span>(<span class="at">video_id=</span><span class="st">&quot;yJXTXN4xrI8&quot;</span>)</span></code></pre></div>
 <pre><code>## &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
 ## &lt;transcript&gt;
 ##   &lt;text start=&quot;6.614&quot; dur=&quot;1.549&quot;&gt;Every four seconds,&lt;/text&gt;
@@ -440,8 +484,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="search-videos" class="section level4">
 <h4>Search Videos</h4>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">res &lt;-<span class="st"> </span><span class="kw">yt_search</span>(<span class="st">&quot;Barack Obama&quot;</span>)</a>
-<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="kw">head</span>(res[, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>])</a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">yt_search</span>(<span class="st">&quot;Barack Obama&quot;</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="fu">head</span>(res[, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>])</span></code></pre></div>
 <pre><code>##                publishedAt                channelId                                                                           title
 ## 1 2016-09-06T11:20:20.000Z UC6CZwQv8cbZco3wOwtp7W2g             See How Obama Ignored Xi Jinping &amp; Welcomed PM Modi At G20 Summit !
 ## 2 2016-09-05T06:01:17.000Z UC6RJ7-PaXg6TIH2BzZfTV7w                                   PM Modi Meets Barack Obama at G20 Summit 2016
@@ -452,8 +496,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="get-comments-on-a-video" class="section level4">
 <h4>Get Comments on a video</h4>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">res &lt;-<span class="st"> </span><span class="kw">get_comment_threads</span>(<span class="kw">c</span>(<span class="dt">video_id=</span><span class="st">&quot;N708P-A45D0&quot;</span>))</a>
-<a class="sourceLine" id="cb13-2" data-line-number="2"><span class="kw">head</span>(res)</a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">get_comment_threads</span>(<span class="fu">c</span>(<span class="at">video_id=</span><span class="st">&quot;N708P-A45D0&quot;</span>))</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="fu">head</span>(res)</span></code></pre></div>
 <pre><code>##    authorDisplayName                                                                              authorProfileImageUrl                                        authorChannelUrl
 ## 1             Tony Rx https://lh5.googleusercontent.com/-OL_t2gRZ8RI/AAAAAAAAAAI/AAAAAAAAACg/tXnqTDNYXec/photo.jpg?sz=50 http://www.youtube.com/channel/UCqKvEBPMtbmh020d56WrQXQ
 ## 2       Kevin Manning https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50 http://www.youtube.com/channel/UCEF-WytcLvgijQIklAbteUw
@@ -465,28 +509,39 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="get-statistics-of-all-the-videos-in-a-channel" class="section level3">
 <h3>Get statistics of all the videos in a channel</h3>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb15-2" data-line-number="2">a &lt;-<span class="st"> </span><span class="kw">list_channel_resources</span>(<span class="dt">filter =</span> <span class="kw">c</span>(<span class="dt">channel_id =</span> <span class="st">&quot;UCT5Cx1l4IS3wHkJXNyuj4TA&quot;</span>), <span class="dt">part=</span><span class="st">&quot;contentDetails&quot;</span>)</a>
-<a class="sourceLine" id="cb15-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb15-4" data-line-number="4"><span class="co"># Uploaded playlists:</span></a>
-<a class="sourceLine" id="cb15-5" data-line-number="5">playlist_id &lt;-<span class="st"> </span>a<span class="op">$</span>items[[<span class="dv">1</span>]]<span class="op">$</span>contentDetails<span class="op">$</span>relatedPlaylists<span class="op">$</span>uploads</a>
-<a class="sourceLine" id="cb15-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb15-7" data-line-number="7"><span class="co"># Get videos on the playlist</span></a>
-<a class="sourceLine" id="cb15-8" data-line-number="8">vids &lt;-<span class="st"> </span><span class="kw">get_playlist_items</span>(<span class="dt">filter=</span> <span class="kw">c</span>(<span class="dt">playlist_id=</span>playlist_id)) </a>
-<a class="sourceLine" id="cb15-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb15-10" data-line-number="10"><span class="co"># Video ids</span></a>
-<a class="sourceLine" id="cb15-11" data-line-number="11">vid_ids &lt;-<span class="st"> </span><span class="kw">as.vector</span>(vids<span class="op">$</span>contentDetails.videoId)</a>
-<a class="sourceLine" id="cb15-12" data-line-number="12"></a>
-<a class="sourceLine" id="cb15-13" data-line-number="13"><span class="co"># Function to scrape stats for all vids</span></a>
-<a class="sourceLine" id="cb15-14" data-line-number="14">get_all_stats &lt;-<span class="st"> </span><span class="cf">function</span>(id) {</a>
-<a class="sourceLine" id="cb15-15" data-line-number="15">  <span class="kw">get_stats</span>(id)</a>
-<a class="sourceLine" id="cb15-16" data-line-number="16">} </a>
-<a class="sourceLine" id="cb15-17" data-line-number="17"></a>
-<a class="sourceLine" id="cb15-18" data-line-number="18"><span class="co"># Get stats and convert results to data frame </span></a>
-<a class="sourceLine" id="cb15-19" data-line-number="19">res &lt;-<span class="st"> </span><span class="kw">lapply</span>(vid_ids, get_all_stats)</a>
-<a class="sourceLine" id="cb15-20" data-line-number="20">res_df &lt;-<span class="st"> </span><span class="kw">do.call</span>(rbind, <span class="kw">lapply</span>(res, data.frame))</a>
-<a class="sourceLine" id="cb15-21" data-line-number="21"></a>
-<a class="sourceLine" id="cb15-22" data-line-number="22"><span class="kw">head</span>(res_df)</a></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">list_channel_resources</span>(<span class="at">filter =</span> <span class="fu">c</span>(<span class="at">channel_id =</span> <span class="st">&quot;UCT5Cx1l4IS3wHkJXNyuj4TA&quot;</span>), <span class="at">part=</span><span class="st">&quot;contentDetails&quot;</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="co"># Uploaded playlists:</span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>playlist_id <span class="ot">&lt;-</span> a<span class="sc">$</span>items[[<span class="dv">1</span>]]<span class="sc">$</span>contentDetails<span class="sc">$</span>relatedPlaylists<span class="sc">$</span>uploads</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="co"># Get videos on the playlist</span></span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>vids <span class="ot">&lt;-</span> <span class="fu">get_playlist_items</span>(<span class="at">filter=</span> <span class="fu">c</span>(<span class="at">playlist_id=</span>playlist_id)) </span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a><span class="co"># Video ids</span></span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a>vid_ids <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(vids<span class="sc">$</span>contentDetails.videoId)</span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a></span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a><span class="co"># Function to scrape stats for all vids</span></span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a>get_all_stats <span class="ot">&lt;-</span> <span class="cf">function</span>(id) {</span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a>  <span class="fu">get_stats</span>(id)</span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a>} </span>
+<span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a></span>
+<span id="cb15-17"><a href="#cb15-17" tabindex="-1"></a><span class="co"># Get stats and convert results to data frame </span></span>
+<span id="cb15-18"><a href="#cb15-18" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">lapply</span>(vid_ids, get_all_stats)</span>
+<span id="cb15-19"><a href="#cb15-19" tabindex="-1"></a>res_df <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(res, data.frame))</span>
+<span id="cb15-20"><a href="#cb15-20" tabindex="-1"></a></span>
+<span id="cb15-21"><a href="#cb15-21" tabindex="-1"></a><span class="fu">head</span>(res_df)</span></code></pre></div>
+<p>If you need to find a channel ID from a <code>username</code>, the
+<code>list_channel_resources</code> function can help. You can use it
+like:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">list_channel_resources</span>(<span class="at">filter =</span> <span class="fu">c</span>(<span class="at">username =</span> <span class="st">&quot;GoogleDevelopers&quot;</span>), <span class="at">part=</span><span class="st">&quot;id&quot;</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="co"># Parse out channel_id</span></span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(res<span class="sc">$</span>items[[<span class="dv">1</span>]]<span class="sc">$</span>id)){</span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>  channel_id <span class="ot">&lt;-</span> res<span class="sc">$</span>items[[<span class="dv">1</span>]]<span class="sc">$</span>id</span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>  <span class="fu">stop</span>(<span class="st">&quot;User not found&quot;</span>) </span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a>}</span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a><span class="co"># channel_id should be UC_x5XG1OV2P6uZZ5FSM9Ttw</span></span></code></pre></div>
 <pre><code>##            id viewCount likeCount dislikeCount favoriteCount commentCount
 ## 1 91gZ4taDiDE       906         4            1             0            0 
 ## 2 bHPCvSqTxn4       706         0            0             0            0 

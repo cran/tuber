@@ -1,3 +1,11 @@
+# version 1.0.1
+
+* Fixed the cross-ref checks
+
+# version 0.9.9.9000 (development version)
+
+* Added support for API key authentication with two new exported functions, `yt_get_key()` and `yt_set_key()`, and a new `auth` argument to the internal function `tuber_GET()`. Users can now pass `auth = "key"` to any function that uses `tuber_GET()` to enable API key authentication. The behavior of `tuber_GET()` remains unchanged when using the new default, `auth = "token"`, which avoids breaking changes to previously written code (@gvelasq, #117).
+
 # version 0.9.9
 
 * added functionality like upload_video etc. see https://github.com/soodoku/tuber/commit/2cf53c50e9079af0f6b1a478698d0bda15f4c5e0
@@ -8,7 +16,6 @@
 * allows for caption uploading
 * list_my_videos
 * list_captions
-*
 
 # version 0.9.6
 
