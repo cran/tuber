@@ -15,10 +15,13 @@
 #' Similarly, to search for videos matching either "boating" or "sailing"
 #' but not "fishing",
 #' set the q parameter value to boating|sailing -fishing"
-#' @param max_results Maximum number of items that should be returned.
-#' Integer. Optional. Can be between 0 and 50. Default is 50.
-#' Search results are constrained to a maximum of 500 videos if type is
-#' video and we have a value of \code{channel_id}.
+#' @param max_results Maximum number of items that should be returned in total.
+#' Integer. Optional. Can be between 1 and 500. Default is 50. If
+#' \code{get_all = TRUE}, multiple API calls are made until this many
+#' results are collected (subject to YouTube limits). Requesting a large number
+#' of results will consume more API quota. Search results are
+#' constrained to a maximum of 500 videos if type is video and we have a
+#' value of \code{channel_id}.
 #' @param channel_id Character. Only return search results from this
 #' channel; Optional.
 #' @param channel_type Character. Optional. Takes one of two values:
@@ -60,7 +63,6 @@
 #' Takes one of three values: \code{'any'} (return all videos; Default),
 #' \code{'creativeCommon'} (return videos with Creative Commons
 #' license), \code{'youtube'} (return videos with standard YouTube license).
-#' @param relevance_language Character. Default is "en".
 #' @param simplify Boolean. Return a data.frame if \code{TRUE}.
 #' Default is \code{TRUE}.
 #' If \code{TRUE}, it returns a list that carries additional information.
@@ -70,7 +72,8 @@
 #' pages. Default is \code{TRUE}.
 #' Result is a \code{data.frame}. Optional.
 #' @param max_pages Maximum number of pages to retrieve when get_all is TRUE.
-#' Default is 10. Set higher for more results, but be aware of API quota limits.
+#' Default is Inf (no page limit). Setting a lower value can reduce API quota
+#' usage.
 #' @param \dots Additional arguments passed to \code{\link{tuber_GET}}.
 #'
 #' @return data.frame with 16 elements: \code{video_id, publishedAt,
@@ -118,13 +121,13 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
                       video_license = "any", video_syndicated = "any",
                       region_code = NULL, relevance_language = "en",
                       video_type = "any", simplify = TRUE, get_all = TRUE,
-                      page_token = NULL, max_pages = 10, ...) {
+                      page_token = NULL, max_pages = Inf, ...) {
 
   # Input validation
   if (!is.character(term) || is.null(term)) stop("Must specify a search term.\n")
 
-  if (max_results < 0 || max_results > 50) {
-    stop("max_results only takes a value between 0 and 50.")
+  if (max_results <= 0 || max_results > 500) {
+    stop("max_results must be between 1 and 500.")
   }
 
   # Validate video-specific parameters only when type is "video"
@@ -132,28 +135,28 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
     if (!(video_license %in% c("any", "creativeCommon", "youtube"))) {
       stop("video_license can only take values: any, creativeCommon, or youtube.")
     }
-    
+
     if (!(video_syndicated %in% c("any", "true"))) {
       stop("video_syndicated can only take values: any or true.")
     }
-    
+
     if (!(video_type %in% c("any", "episode", "movie"))) {
       stop("video_type can only take values: any, episode, or movie.")
     }
   } else {
     # Set these to NULL if type is not "video" to avoid sending them in the API call
-    video_caption <- video_license <- video_definition <- 
+    video_caption <- video_license <- video_definition <-
       video_type <- video_syndicated <- NULL
   }
 
   # Validate date formats
   validate_rfc339_date <- function(date_str) {
-    if (is.character(date_str) && 
+    if (is.character(date_str) &&
         is.na(as.POSIXct(date_str, format = "%Y-%m-%dT%H:%M:%SZ"))) {
       stop("The date is not properly formatted in RFC 339 Format (YYYY-MM-DDTHH:MM:SSZ).")
     }
   }
-  
+
   validate_rfc339_date(published_after)
   validate_rfc339_date(published_before)
 
@@ -163,10 +166,11 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
   }
 
   # Build the query list
+  results_per_page <- min(max_results, 50)
   querylist <- list(
     part = "snippet",
     q = term,
-    maxResults = max_results,
+    maxResults = results_per_page,
     channelId = channel_id,
     type = type,
     channelType = channel_type,
@@ -193,7 +197,7 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
     if (length(res_items) == 0) {
       return(data.frame())
     }
-    
+
     if (item_type == "video") {
       simple_res <- lapply(res_items, function(x) {
         if (is.null(x$id$videoId)) {
@@ -204,19 +208,19 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
     } else {
       simple_res <- lapply(res_items, function(x) unlist(x$snippet))
     }
-    
+
     # Remove NULL entries and convert to data frame
     simple_res <- simple_res[!sapply(simple_res, is.null)]
     if (length(simple_res) == 0) {
       return(data.frame())
     }
-    
+
     return(ldply(simple_res, rbind))
   }
 
   # Make initial API call
   res <- tuber_GET("search", querylist, ...)
-  
+
   # If get_all is FALSE or there are no results, process and return
   if (!identical(get_all, TRUE) || res$pageInfo$totalResults == 0) {
     if (!identical(simplify, TRUE)) {
@@ -224,38 +228,59 @@ yt_search <- function(term = NULL, max_results = 50, channel_id = NULL,
     }
     return(process_results(res$items, type))
   }
-  
+
   # Process all pages for get_all=TRUE
   all_results <- process_results(res$items, type)
   page_token <- res$nextPageToken
   page_count <- 1
-  
-  # Get all pages up to max_pages limit
-  while (!is.null(page_token) && page_count < max_pages) {
-    querylist$pageToken <- page_token
-    a_res <- tuber_GET("search", querylist, ...)
+  total_returned <- nrow(all_results)
+
+  # Get all pages up to max_pages limit and requested max_results
+  while (!is.null(page_token) && page_count < max_pages &&
+         total_returned < max_results) {
     
+    # Calculate how many more results we actually need
+    remaining_needed <- max_results - total_returned
+    request_size <- min(remaining_needed, 50)  # Don't request more than we need
+    
+    querylist$pageToken <- page_token
+    querylist$maxResults <- request_size
+    a_res <- tuber_GET("search", querylist, ...)
+
     next_results <- process_results(a_res$items, type)
+    
+    # Only take what we need if we get more than requested
+    if (nrow(next_results) > remaining_needed) {
+      next_results <- next_results[seq_len(remaining_needed), , drop = FALSE]
+    }
+    
     all_results <- rbind(all_results, next_results)
+    total_returned <- nrow(all_results)
     page_token <- a_res$nextPageToken
     page_count <- page_count + 1
-    
+
+    # Stop if we've reached our target
+    if (total_returned >= max_results) {
+      break
+    }
+
     # Check if we've reached YouTube's limit (around 500-600 items)
-    if (nrow(all_results) >= 500 && is.null(page_token)) {
+    if (total_returned >= 500 && is.null(page_token)) {
       warning("Reached YouTube API search result limit (approximately 500 items)")
       break
     }
   }
-  
+
   # Add warning if we hit the max_pages limit but there are still more results
-  if (!is.null(page_token) && page_count >= max_pages) {
-    warning(sprintf("Only retrieved %d pages of results. Set max_pages higher to get more results.", max_pages))
+  if (!is.null(page_token) && page_count >= max_pages && total_returned < max_results) {
+    warning(sprintf("Only retrieved %d pages of results (got %d/%d items). Set max_pages higher to get more results.", 
+                   max_pages, total_returned, max_results))
   }
-  
+
   # Add additional information as attributes
   attr(all_results, "total_results") <- res$pageInfo$totalResults
   attr(all_results, "actual_results") <- nrow(all_results)
   attr(all_results, "api_limit_reached") <- nrow(all_results) >= 500
-  
+
   return(all_results)
 }

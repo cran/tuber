@@ -21,6 +21,9 @@ To get the current development version from GitHub:
 devtools::install_github("soodoku/tuber", build_vignettes = TRUE)
 ```
 
+To get a quick overview of some important functions in tuber, check out
+[this article](https://gojiplus.github.io/tuber/articles/tuber-ex.html).
+
 ### Using tuber
 
 To get going, get the application id and password from the Google
@@ -34,6 +37,13 @@ Guide](https://developers.google.com/youtube/v3/guides/authentication).
 ``` r
 yt_oauth("app_id", "app_password")
 ```
+
+If your session cannot open a browser window for authentication, pass
+`use_oob = TRUE` to `yt_oauth()` so that authentication can be completed
+via an out-of-band code.
+
+To force re-authentication at any time, delete the `.httr-oauth` file in
+your working directory.
 
 **Note:** If you are on ubuntu, you may have to run the following before
 doing anything:

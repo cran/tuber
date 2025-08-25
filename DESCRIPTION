@@ -1,6 +1,6 @@
 Package: tuber
 Title: Client for the YouTube API
-Version: 1.0.1
+Version: 1.1.0
 Authors@R: c(
     person("Gaurav", "Sood", , "gsood07@gmail.com", role = c("aut", "cre")),
     person("Kate", "Lyons", , "k.lyons7@gmail.com", role = "ctb"),
@@ -24,9 +24,9 @@ VignetteBuilder: knitr
 Encoding: UTF-8
 RoxygenNote: 7.3.2
 NeedsCompilation: no
-Packaged: 2025-04-01 20:39:24 UTC; soodoku
+Packaged: 2025-08-25 02:50:14 UTC; soodoku
 Author: Gaurav Sood [aut, cre],
   Kate Lyons [ctb],
   John Muschelli [ctb]
 Repository: CRAN
-Date/Publication: 2025-04-01 20:50:02 UTC
+Date/Publication: 2025-08-25 03:10:02 UTC

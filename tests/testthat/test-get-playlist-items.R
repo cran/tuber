@@ -1,7 +1,6 @@
-context("List Captions")
+context("Get Playlist Items")
 
-test_that("list_captions runs successfully", {
-
+test_that("get_playlist_items returns >50 results when requested", {
   skip_on_cran()
   
   # Skip if no token file exists
@@ -13,9 +12,8 @@ test_that("list_captions runs successfully", {
     google_token <- readRDS("token_file.rds.enc")$google_token
     options(google_token = google_token)
 
-    video_id <- "M7FIvfx5J10"
-    get_info <- list_caption_tracks(video_id = video_id)
-    expect_that(get_info, is_a("data.frame"))
+    res <- get_playlist_items(filter = c(playlist_id = "PLrEnWoR732-CN09YykVof2lxdI3MLOZda"), max_results = 55)
+    expect_true(length(res$items) >= 55)
     
   }, error = function(e) {
     skip(paste("API test failed:", e$message))
