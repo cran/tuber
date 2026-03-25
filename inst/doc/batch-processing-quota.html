@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="tuber maintainers" />
+
+<meta name="date" content="2026-03-24" />
+
+<title>Batch Processing &amp; Quota Management</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Batch Processing &amp; Quota
+Management</h1>
+<h4 class="author">tuber maintainers</h4>
+<h4 class="date">2026-03-24</h4>
+
+
+
+<div id="understanding-youtube-api-quotas" class="section level2">
+<h2>Understanding YouTube API Quotas</h2>
+<p>The YouTube Data API v3 uses a quota system to manage usage. Every
+project is allocated 10,000 quota units per day by default.</p>
+<div id="quota-costs-by-operation" class="section level3">
+<h3>Quota Costs by Operation</h3>
+<p>Different operations have different quota costs:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Operation</th>
+<th>Quota Cost</th>
+<th>Example Function</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Read (list, search)</td>
+<td>1 unit</td>
+<td><code>get_video_details()</code>, <code>yt_search()</code></td>
+</tr>
+<tr class="even">
+<td>Search</td>
+<td>100 units</td>
+<td><code>yt_search()</code></td>
+</tr>
+<tr class="odd">
+<td>Write (insert)</td>
+<td>50 units</td>
+<td><code>create_playlist()</code>, <code>upload_video()</code></td>
+</tr>
+<tr class="even">
+<td>Update</td>
+<td>50 units</td>
+<td><code>update_video_metadata()</code></td>
+</tr>
+<tr class="odd">
+<td>Delete</td>
+<td>50 units</td>
+<td><code>delete_videos()</code>, <code>delete_comments()</code></td>
+</tr>
+<tr class="even">
+<td>Upload video</td>
+<td>1,600 units</td>
+<td><code>upload_video()</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Important:</strong> Search operations
+(<code>yt_search()</code>, <code>yt_topic_search()</code>) cost 100
+units each, so you can only perform 100 searches per day with the
+default quota!</p>
+</div>
+<div id="tracking-quota-usage" class="section level3">
+<h3>Tracking Quota Usage</h3>
+<p>tuber provides built-in quota tracking:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(tuber)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="co"># Check current quota usage</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>quota_status <span class="ot">&lt;-</span> <span class="fu">yt_get_quota_usage</span>()</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">print</span>(quota_status)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="co"># View details</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>quota_status<span class="sc">$</span>quota_used      <span class="co"># Units used today</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>quota_status<span class="sc">$</span>quota_limit     <span class="co"># Your daily limit (default: 10,000)</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>quota_status<span class="sc">$</span>quota_remaining <span class="co"># Units remaining</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>quota_status<span class="sc">$</span>reset_time      <span class="co"># When quota resets (midnight Pacific Time)</span></span></code></pre></div>
+</div>
+<div id="setting-custom-quota-limits" class="section level3">
+<h3>Setting Custom Quota Limits</h3>
+<p>If you’ve requested a quota increase from Google, update your
+limit:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Set a custom quota limit</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">yt_set_quota_limit</span>(<span class="dv">50000</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co"># Reset quota tracking (e.g., after midnight)</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="fu">yt_reset_quota</span>()</span></code></pre></div>
+</div>
+</div>
+<div id="authentication-strategies" class="section level2">
+<h2>Authentication Strategies</h2>
+<p>tuber supports two authentication methods, each with different use
+cases.</p>
+<div id="api-key-authentication" class="section level3">
+<h3>API Key Authentication</h3>
+<p>Best for <strong>read-only public data</strong>: - Searching videos -
+Getting public video statistics - Fetching channel information - Reading
+public comments</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Set up API key (get one from Google Cloud Console)</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">yt_set_key</span>(<span class="st">&quot;YOUR_API_KEY&quot;</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co"># Use API key for read operations</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>video_stats <span class="ot">&lt;-</span> <span class="fu">get_video_details</span>(</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="at">video_ids =</span> <span class="st">&quot;dQw4w9WgXcQ&quot;</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>  <span class="at">auth =</span> <span class="st">&quot;key&quot;</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>)</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>channel_stats <span class="ot">&lt;-</span> <span class="fu">get_channel_stats</span>(</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>  <span class="at">channel_ids =</span> <span class="st">&quot;UCuAXFkgsw1L7xaCfnd5JJOw&quot;</span>,</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>  <span class="at">auth =</span> <span class="st">&quot;key&quot;</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="oauth2-authentication" class="section level3">
+<h3>OAuth2 Authentication</h3>
+<p>Required for: - Accessing private/unlisted content - Writing data
+(creating playlists, uploading videos) - Deleting resources - Accessing
+user’s own channel data</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Set up OAuth2 (opens browser for authentication)</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">yt_oauth</span>(<span class="st">&quot;YOUR_CLIENT_ID&quot;</span>, <span class="st">&quot;YOUR_CLIENT_SECRET&quot;</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co"># Write operations require OAuth</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="fu">create_playlist</span>(</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">&quot;My New Playlist&quot;</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  <span class="at">description =</span> <span class="st">&quot;A collection of favorites&quot;</span>,</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>  <span class="at">status =</span> <span class="st">&quot;private&quot;</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>)</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co"># Access your own channel&#39;s unlisted videos</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="fu">list_my_videos</span>()</span></code></pre></div>
+</div>
+<div id="which-authentication-to-use" class="section level3">
+<h3>Which Authentication to Use?</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Task</th>
+<th>API Key</th>
+<th>OAuth2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Search public videos</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>Get public video stats</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td>Get public channel info</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>Read public comments</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td>Access unlisted videos (own)</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>Access private videos (own)</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td>Create/update playlists</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>Upload videos</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td>Delete content</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>Manage comments</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="batch-processing" class="section level2">
+<h2>Batch Processing</h2>
+<p>When working with many videos or channels, batch processing is
+essential for efficiency.</p>
+<div id="processing-multiple-videos" class="section level3">
+<h3>Processing Multiple Videos</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Get details for multiple videos at once</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>video_ids <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;dQw4w9WgXcQ&quot;</span>, <span class="st">&quot;M7FIvfx5J10&quot;</span>, <span class="st">&quot;kJQP7kiw5Fk&quot;</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co"># Single API call for multiple videos (more efficient)</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>videos <span class="ot">&lt;-</span> <span class="fu">get_video_details</span>(</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="at">video_ids =</span> video_ids,</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  <span class="at">part =</span> <span class="fu">c</span>(<span class="st">&quot;snippet&quot;</span>, <span class="st">&quot;statistics&quot;</span>),</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  <span class="at">auth =</span> <span class="st">&quot;key&quot;</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>)</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co"># Analyze results</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="fu">head</span>(videos)</span></code></pre></div>
+</div>
+<div id="using-bulk-analysis-functions" class="section level3">
+<h3>Using Bulk Analysis Functions</h3>
+<p>tuber provides high-level functions for common analysis tasks:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Comprehensive video analysis</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>analysis <span class="ot">&lt;-</span> <span class="fu">bulk_video_analysis</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="at">video_ids =</span> video_ids,</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="at">include_comments =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  <span class="at">auth =</span> <span class="st">&quot;key&quot;</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>)</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co"># Access results</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>analysis<span class="sc">$</span>video_data    <span class="co"># Detailed video information</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>analysis<span class="sc">$</span>benchmarks    <span class="co"># Performance percentiles</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>analysis<span class="sc">$</span>summary       <span class="co"># Overall statistics</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="co"># Channel analysis</span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>channel_analysis <span class="ot">&lt;-</span> <span class="fu">analyze_channel</span>(</span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>  <span class="at">channel_id =</span> <span class="st">&quot;UCuAXFkgsw1L7xaCfnd5JJOw&quot;</span>,</span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>  <span class="at">max_videos =</span> <span class="dv">50</span>,</span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a>  <span class="at">auth =</span> <span class="st">&quot;key&quot;</span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a>)</span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a></span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a><span class="co"># Compare multiple channels</span></span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a>comparison <span class="ot">&lt;-</span> <span class="fu">compare_channels</span>(</span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a>  <span class="at">channel_ids =</span> <span class="fu">c</span>(<span class="st">&quot;UC1&quot;</span>, <span class="st">&quot;UC2&quot;</span>, <span class="st">&quot;UC3&quot;</span>),</span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a>  <span class="at">metrics =</span> <span class="fu">c</span>(<span class="st">&quot;subscriber_count&quot;</span>, <span class="st">&quot;video_count&quot;</span>, <span class="st">&quot;view_count&quot;</span>),</span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a>  <span class="at">auth =</span> <span class="st">&quot;key&quot;</span></span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="pagination-handling" class="section level3">
+<h3>Pagination Handling</h3>
+<p>tuber automatically handles pagination for large result sets:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Request more items than API allows per page (50)</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co"># tuber automatically makes multiple API calls</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>playlist_items <span class="ot">&lt;-</span> <span class="fu">get_playlist_items</span>(</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="at">playlist_id =</span> <span class="st">&quot;PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf&quot;</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="at">max_results =</span> <span class="dv">200</span>,  <span class="co"># Will make 4 API calls</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  <span class="at">auth =</span> <span class="st">&quot;key&quot;</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>)</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co"># Get many comments with automatic pagination</span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>comments <span class="ot">&lt;-</span> <span class="fu">get_comment_threads</span>(</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>  <span class="at">filter =</span> <span class="fu">c</span>(<span class="at">video_id =</span> <span class="st">&quot;dQw4w9WgXcQ&quot;</span>),</span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>  <span class="at">max_results =</span> <span class="dv">500</span>,  <span class="co"># Will paginate automatically</span></span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>  <span class="at">auth =</span> <span class="st">&quot;key&quot;</span></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+</div>
+<div id="extracting-data-from-results" class="section level2">
+<h2>Extracting Data from Results</h2>
+<p>YouTube API responses contain nested JSON. Here’s how to work with
+them.</p>
+<div id="using-simplify-true-default" class="section level3">
+<h3>Using simplify = TRUE (Default)</h3>
+<p>Most functions flatten nested data into data frames:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Get simplified output</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>videos <span class="ot">&lt;-</span> <span class="fu">get_video_details</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="at">video_ids =</span> <span class="st">&quot;dQw4w9WgXcQ&quot;</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="at">simplify =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="at">auth =</span> <span class="st">&quot;key&quot;</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>)</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co"># Access fields directly</span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>videos<span class="sc">$</span>title</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>videos<span class="sc">$</span>viewCount</span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>videos<span class="sc">$</span>likeCount</span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>videos<span class="sc">$</span>channelTitle</span></code></pre></div>
+</div>
+<div id="using-simplify-false-for-complex-data" class="section level3">
+<h3>Using simplify = FALSE for Complex Data</h3>
+<p>When you need the full nested structure:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># Get raw API response</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>videos_raw <span class="ot">&lt;-</span> <span class="fu">get_video_details</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  <span class="at">video_ids =</span> <span class="st">&quot;dQw4w9WgXcQ&quot;</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="at">simplify =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>  <span class="at">auth =</span> <span class="st">&quot;key&quot;</span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>)</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="co"># Navigate nested structure</span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>video <span class="ot">&lt;-</span> videos_raw<span class="sc">$</span>items[[<span class="dv">1</span>]]</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>video<span class="sc">$</span>snippet<span class="sc">$</span>title</span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>video<span class="sc">$</span>snippet<span class="sc">$</span>thumbnails<span class="sc">$</span>high<span class="sc">$</span>url</span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>video<span class="sc">$</span>statistics<span class="sc">$</span>viewCount</span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a>video<span class="sc">$</span>contentDetails<span class="sc">$</span>duration</span></code></pre></div>
+</div>
+<div id="common-field-access-patterns" class="section level3">
+<h3>Common Field Access Patterns</h3>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># Video details</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>videos<span class="sc">$</span>snippet.title          <span class="co"># Title</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>videos<span class="sc">$</span>snippet.description    <span class="co"># Description</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>videos<span class="sc">$</span>statistics.viewCount   <span class="co"># View count</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>videos<span class="sc">$</span>statistics.likeCount   <span class="co"># Like count</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>videos<span class="sc">$</span>contentDetails.duration <span class="co"># Duration (ISO 8601)</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co"># Channel details</span></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>channels<span class="sc">$</span>snippet.title           <span class="co"># Channel name</span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>channels<span class="sc">$</span>statistics.subscriberCount</span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>channels<span class="sc">$</span>statistics.videoCount</span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a>channels<span class="sc">$</span>brandingSettings.channel.description</span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a><span class="co"># Comment extraction</span></span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a>comments<span class="sc">$</span>snippet.topLevelComment.snippet.textDisplay</span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a>comments<span class="sc">$</span>snippet.topLevelComment.snippet.authorDisplayName</span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a>comments<span class="sc">$</span>snippet.topLevelComment.snippet.likeCount</span></code></pre></div>
+</div>
+</div>
+<div id="error-handling-retries" class="section level2">
+<h2>Error Handling &amp; Retries</h2>
+<div id="using-with_retry-for-transient-errors" class="section level3">
+<h3>Using with_retry for Transient Errors</h3>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># Automatic retry with exponential backoff</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">with_retry</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  <span class="fu">get_video_details</span>(<span class="at">video_ids =</span> <span class="st">&quot;dQw4w9WgXcQ&quot;</span>, <span class="at">auth =</span> <span class="st">&quot;key&quot;</span>),</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>  <span class="at">max_retries =</span> <span class="dv">3</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>  <span class="at">base_delay =</span> <span class="dv">1</span></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="handling-quota-exhaustion" class="section level3">
+<h3>Handling Quota Exhaustion</h3>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># Check before making requests</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>quota <span class="ot">&lt;-</span> <span class="fu">yt_get_quota_usage</span>()</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="cf">if</span> (quota<span class="sc">$</span>quota_remaining <span class="sc">&lt;</span> <span class="dv">100</span>) {</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="fu">warning</span>(<span class="st">&quot;Low quota! Consider waiting until reset at: &quot;</span>, quota<span class="sc">$</span>reset_time)</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>}</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a><span class="co"># Wrap expensive operations</span></span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a><span class="fu">tryCatch</span>({</span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>  results <span class="ot">&lt;-</span> <span class="fu">yt_search</span>(<span class="at">term =</span> <span class="st">&quot;R programming&quot;</span>, <span class="at">max_results =</span> <span class="dv">50</span>)</span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a>}, <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">grepl</span>(<span class="st">&quot;quota&quot;</span>, e<span class="sc">$</span>message, <span class="at">ignore.case =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">&quot;Quota exceeded. Try again after: &quot;</span>, <span class="fu">yt_get_quota_usage</span>()<span class="sc">$</span>reset_time)</span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a>  }</span>
+<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a>})</span></code></pre></div>
+</div>
+<div id="rate-limiting-best-practices" class="section level3">
+<h3>Rate Limiting Best Practices</h3>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="co"># Add delays between requests</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>video_ids <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;id1&quot;</span>, <span class="st">&quot;id2&quot;</span>, <span class="st">&quot;id3&quot;</span>, <span class="st">&quot;id4&quot;</span>, <span class="st">&quot;id5&quot;</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">lapply</span>(video_ids, <span class="cf">function</span>(vid) {</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>  <span class="fu">Sys.sleep</span>(<span class="fl">0.5</span>)  <span class="co"># 500ms delay between requests</span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>  <span class="fu">get_video_details</span>(<span class="at">video_ids =</span> vid, <span class="at">auth =</span> <span class="st">&quot;key&quot;</span>)</span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>})</span></code></pre></div>
+</div>
+</div>
+<div id="caching-for-performance" class="section level2">
+<h2>Caching for Performance</h2>
+<p>tuber includes built-in caching for frequently accessed data:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="co"># Configure cache</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="fu">tuber_cache_config</span>(</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>  <span class="at">enabled =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>  <span class="at">max_size =</span> <span class="dv">100</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>  <span class="at">ttl =</span> <span class="dv">3600</span>  <span class="co"># 1 hour TTL</span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>)</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a><span class="co"># Cached functions (no API call if recently fetched)</span></span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>cats <span class="ot">&lt;-</span> <span class="fu">list_videocats_cached</span>(<span class="at">auth =</span> <span class="st">&quot;key&quot;</span>)</span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>langs <span class="ot">&lt;-</span> <span class="fu">list_langs_cached</span>(<span class="at">auth =</span> <span class="st">&quot;key&quot;</span>)</span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a>regions <span class="ot">&lt;-</span> <span class="fu">list_regions_cached</span>(<span class="at">auth =</span> <span class="st">&quot;key&quot;</span>)</span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a>channel <span class="ot">&lt;-</span> <span class="fu">get_channel_info_cached</span>(<span class="at">channel_id =</span> <span class="st">&quot;UCxyz&quot;</span>, <span class="at">auth =</span> <span class="st">&quot;key&quot;</span>)</span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a></span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a><span class="co"># Check cache status</span></span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a><span class="fu">tuber_cache_info</span>()</span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a></span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a><span class="co"># Clear cache when needed</span></span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a><span class="fu">tuber_cache_clear</span>()</span></code></pre></div>
+</div>
+<div id="practical-examples" class="section level2">
+<h2>Practical Examples</h2>
+<div id="example-1-analyze-a-channels-performance" class="section level3">
+<h3>Example 1: Analyze a Channel’s Performance</h3>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="co"># Full channel analysis</span></span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>analysis <span class="ot">&lt;-</span> <span class="fu">analyze_channel</span>(</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  <span class="at">channel_id =</span> <span class="st">&quot;UCuAXFkgsw1L7xaCfnd5JJOw&quot;</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>  <span class="at">max_videos =</span> <span class="dv">100</span>,</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>  <span class="at">auth =</span> <span class="st">&quot;key&quot;</span></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>)</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="co"># Summary statistics</span></span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Channel:&quot;</span>, analysis<span class="sc">$</span>channel_info<span class="sc">$</span>title, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Subscribers:&quot;</span>, analysis<span class="sc">$</span>channel_info<span class="sc">$</span>subscriberCount, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Average views:&quot;</span>, analysis<span class="sc">$</span>performance_metrics<span class="sc">$</span>avg_views_per_video, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Engagement rate:&quot;</span>, analysis<span class="sc">$</span>performance_metrics<span class="sc">$</span>engagement_rate, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+</div>
+<div id="example-2-trending-analysis" class="section level3">
+<h3>Example 2: Trending Analysis</h3>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="co"># Analyze trending topics</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>trends <span class="ot">&lt;-</span> <span class="fu">analyze_trends</span>(</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>  <span class="at">search_terms =</span> <span class="fu">c</span>(<span class="st">&quot;machine learning&quot;</span>, <span class="st">&quot;AI&quot;</span>, <span class="st">&quot;data science&quot;</span>),</span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>  <span class="at">time_period =</span> <span class="st">&quot;month&quot;</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>  <span class="at">max_results =</span> <span class="dv">25</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>  <span class="at">region_code =</span> <span class="st">&quot;US&quot;</span>,</span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>  <span class="at">auth =</span> <span class="st">&quot;key&quot;</span></span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a>)</span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a></span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a><span class="co"># View trend summary</span></span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a><span class="fu">print</span>(trends<span class="sc">$</span>trend_summary)</span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a></span>
+<span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a><span class="co"># Most trending term</span></span>
+<span id="cb16-14"><a href="#cb16-14" tabindex="-1"></a>best_trend <span class="ot">&lt;-</span> trends<span class="sc">$</span>trend_summary[<span class="dv">1</span>, ]</span>
+<span id="cb16-15"><a href="#cb16-15" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Top trending:&quot;</span>, best_trend<span class="sc">$</span>search_term, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb16-16"><a href="#cb16-16" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Total views:&quot;</span>, best_trend<span class="sc">$</span>total_views, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+</div>
+<div id="example-3-efficient-video-processing" class="section level3">
+<h3>Example 3: Efficient Video Processing</h3>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="co"># Get all videos from a playlist</span></span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>playlist_videos <span class="ot">&lt;-</span> <span class="fu">get_playlist_items</span>(</span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>  <span class="at">playlist_id =</span> <span class="st">&quot;PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf&quot;</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>  <span class="at">max_results =</span> <span class="dv">100</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>  <span class="at">auth =</span> <span class="st">&quot;key&quot;</span></span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>)</span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a><span class="co"># Extract video IDs</span></span>
+<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a>video_ids <span class="ot">&lt;-</span> <span class="fu">sapply</span>(playlist_videos<span class="sc">$</span>items, <span class="cf">function</span>(x) {</span>
+<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a>  x<span class="sc">$</span>contentDetails<span class="sc">$</span>videoId</span>
+<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a>})</span>
+<span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a></span>
+<span id="cb17-13"><a href="#cb17-13" tabindex="-1"></a><span class="co"># Get detailed stats for all videos in one call</span></span>
+<span id="cb17-14"><a href="#cb17-14" tabindex="-1"></a>video_stats <span class="ot">&lt;-</span> <span class="fu">get_video_details</span>(</span>
+<span id="cb17-15"><a href="#cb17-15" tabindex="-1"></a>  <span class="at">video_ids =</span> video_ids,</span>
+<span id="cb17-16"><a href="#cb17-16" tabindex="-1"></a>  <span class="at">part =</span> <span class="fu">c</span>(<span class="st">&quot;statistics&quot;</span>, <span class="st">&quot;contentDetails&quot;</span>),</span>
+<span id="cb17-17"><a href="#cb17-17" tabindex="-1"></a>  <span class="at">auth =</span> <span class="st">&quot;key&quot;</span></span>
+<span id="cb17-18"><a href="#cb17-18" tabindex="-1"></a>)</span>
+<span id="cb17-19"><a href="#cb17-19" tabindex="-1"></a></span>
+<span id="cb17-20"><a href="#cb17-20" tabindex="-1"></a><span class="co"># Analyze performance</span></span>
+<span id="cb17-21"><a href="#cb17-21" tabindex="-1"></a>total_views <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">as.numeric</span>(video_stats<span class="sc">$</span>viewCount), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb17-22"><a href="#cb17-22" tabindex="-1"></a>avg_duration <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">as.numeric</span>(video_stats<span class="sc">$</span>duration), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+</div>
+</div>
+<div id="troubleshooting" class="section level2">
+<h2>Troubleshooting</h2>
+<div id="common-issues" class="section level3">
+<h3>Common Issues</h3>
+<p><strong>“quotaExceeded” error:</strong> - Check quota with
+<code>yt_get_quota_usage()</code> - Wait until <code>reset_time</code>
+or request quota increase from Google</p>
+<p><strong>“forbidden” error:</strong> - Ensure YouTube Data API is
+enabled in Google Cloud Console - Check API key/OAuth credentials are
+correct - Verify the resource isn’t private</p>
+<p><strong>“videoNotFound” or empty results:</strong> - Video may be
+private, deleted, or region-restricted - Double-check the video/channel
+ID format</p>
+<p><strong>Rate limiting (429 errors):</strong> - Add delays with
+<code>Sys.sleep()</code> between requests - Use
+<code>with_retry()</code> for automatic backoff</p>
+</div>
+<div id="getting-help" class="section level3">
+<h3>Getting Help</h3>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="co"># Check function documentation</span></span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>?get_video_details</span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a>?yt_search</span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a>?with_retry</span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a><span class="co"># View package vignettes</span></span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a><span class="fu">browseVignettes</span>(<span class="st">&quot;tuber&quot;</span>)</span></code></pre></div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

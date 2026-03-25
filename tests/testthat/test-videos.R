@@ -1,42 +1,47 @@
-context("YT Search")
+context("Get Details")
 
-test_that("yt_search obeys max_results", {
+test_that("get_video_details runs successfully", {
+
   skip_on_cran()
-  
+
   # Skip if no token file exists
   if (!file.exists("token_file.rds.enc")) {
     skip("No token file available for API testing")
   }
-  
+
   tryCatch({
     google_token <- readRDS("token_file.rds.enc")$google_token
     options(google_token = google_token)
 
-    res <- yt_search(term = "cats", type = "channel", max_results = 5)
-    expect_s3_class(res, "data.frame")
-    expect_equal(nrow(res), 5)
-    
+    get_info <- get_video_details(video_id = "N708P-A45D0")
+    expect_true(is.list(get_info))
+
   }, error = function(e) {
     skip(paste("API test failed:", e$message))
   })
 })
 
-test_that("yt_search returns >50 results when requested", {
+context("Get Details as Data Frame")
+
+test_that("get_video_details(as.data.frame = TRUE) runs successfully for multiple videos", {
+
   skip_on_cran()
-  
+
   # Skip if no token file exists
   if (!file.exists("token_file.rds.enc")) {
     skip("No token file available for API testing")
   }
-  
+
   tryCatch({
     google_token <- readRDS("token_file.rds.enc")$google_token
     options(google_token = google_token)
 
-    res <- yt_search(term = "cats", type = "video", max_results = 55)
-    expect_s3_class(res, "data.frame")
-    expect_true(nrow(res) >= 55)
-    
+    get_info <- get_video_details(
+      video_id = c("LDZX4ooRsWs", "yJXTXN4xrI8"),
+      as.data.frame = TRUE)
+    expect_s3_class(get_info, "data.frame")
+    expect_true(all(c("items_kind", "channelTitle") %in% names(get_info)))
+
   }, error = function(e) {
     skip(paste("API test failed:", e$message))
   })

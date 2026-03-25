@@ -12,7 +12,7 @@
 
 <meta name="author" content="Gaurav Sood" />
 
-<meta name="date" content="2025-08-24" />
+<meta name="date" content="2026-03-24" />
 
 <title>Using tuber</title>
 
@@ -341,7 +341,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Using tuber</h1>
 <h4 class="author">Gaurav Sood</h4>
-<h4 class="date">2025-08-24</h4>
+<h4 class="date">2026-03-24</h4>
 
 
 
@@ -373,7 +373,7 @@ OAuth Guide</a>.</p>
 <span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="do">## Authentication complete.</span></span></code></pre></div>
 <div id="get-statistics-of-a-video" class="section level4">
 <h4>Get Statistics of a Video</h4>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">get_stats</span>(<span class="at">video_id=</span><span class="st">&quot;N708P-A45D0&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">get_stats</span>(<span class="at">video_id =</span> <span class="st">&quot;N708P-A45D0&quot;</span>)</span></code></pre></div>
 <pre><code>## No. of Views 525112 
 ## No. of Likes 5576 
 ## No. of Dislikes 3564 
@@ -382,11 +382,11 @@ OAuth Guide</a>.</p>
 </div>
 <div id="get-information-about-a-video" class="section level4">
 <h4>Get Information About a Video</h4>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">get_video_details</span>(<span class="at">video_id=</span><span class="st">&quot;N708P-A45D0&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">get_video_details</span>(<span class="at">video_id =</span> <span class="st">&quot;N708P-A45D0&quot;</span>)</span></code></pre></div>
 </div>
 <div id="get-caption-of-a-video" class="section level4">
 <h4>Get Caption of a Video</h4>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">get_captions</span>(<span class="at">video_id=</span><span class="st">&quot;yJXTXN4xrI8&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">get_captions</span>(<span class="at">video_id =</span> <span class="st">&quot;yJXTXN4xrI8&quot;</span>)</span></code></pre></div>
 <pre><code>## &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
 ## &lt;transcript&gt;
 ##   &lt;text start=&quot;6.614&quot; dur=&quot;1.549&quot;&gt;Every four seconds,&lt;/text&gt;
@@ -497,7 +497,7 @@ OAuth Guide</a>.</p>
 </div>
 <div id="get-comments-on-a-video" class="section level4">
 <h4>Get Comments on a video</h4>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">get_comment_threads</span>(<span class="fu">c</span>(<span class="at">video_id=</span><span class="st">&quot;N708P-A45D0&quot;</span>))</span>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">get_comment_threads</span>(<span class="fu">c</span>(<span class="at">video_id =</span> <span class="st">&quot;N708P-A45D0&quot;</span>))</span>
 <span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="fu">head</span>(res)</span></code></pre></div>
 <pre><code>##    authorDisplayName                                                                              authorProfileImageUrl                                        authorChannelUrl
 ## 1             Tony Rx https://lh5.googleusercontent.com/-OL_t2gRZ8RI/AAAAAAAAAAI/AAAAAAAAACg/tXnqTDNYXec/photo.jpg?sz=50 http://www.youtube.com/channel/UCqKvEBPMtbmh020d56WrQXQ
@@ -510,13 +510,13 @@ OAuth Guide</a>.</p>
 </div>
 <div id="get-statistics-of-all-the-videos-in-a-channel" class="section level3">
 <h3>Get statistics of all the videos in a channel</h3>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">list_channel_resources</span>(<span class="at">filter =</span> <span class="fu">c</span>(<span class="at">channel_id =</span> <span class="st">&quot;UCT5Cx1l4IS3wHkJXNyuj4TA&quot;</span>), <span class="at">part=</span><span class="st">&quot;contentDetails&quot;</span>)</span>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">list_channel_resources</span>(<span class="at">filter =</span> <span class="fu">c</span>(<span class="at">channel_id =</span> <span class="st">&quot;UCT5Cx1l4IS3wHkJXNyuj4TA&quot;</span>), <span class="at">part =</span> <span class="st">&quot;contentDetails&quot;</span>)</span>
 <span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a></span>
 <span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="co"># Uploaded playlists:</span></span>
 <span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>playlist_id <span class="ot">&lt;-</span> a<span class="sc">$</span>items[[<span class="dv">1</span>]]<span class="sc">$</span>contentDetails<span class="sc">$</span>relatedPlaylists<span class="sc">$</span>uploads</span>
 <span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a></span>
 <span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="co"># Get videos on the playlist</span></span>
-<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>vids <span class="ot">&lt;-</span> <span class="fu">get_playlist_items</span>(<span class="at">filter=</span> <span class="fu">c</span>(<span class="at">playlist_id=</span>playlist_id)) </span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>vids <span class="ot">&lt;-</span> <span class="fu">get_playlist_items</span>(<span class="at">filter =</span> <span class="fu">c</span>(<span class="at">playlist_id =</span> playlist_id))</span>
 <span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a></span>
 <span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a><span class="co"># Video ids</span></span>
 <span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a>vid_ids <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(vids<span class="sc">$</span>contentDetails.videoId)</span>
@@ -524,9 +524,9 @@ OAuth Guide</a>.</p>
 <span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a><span class="co"># Function to scrape stats for all vids</span></span>
 <span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a>get_all_stats <span class="ot">&lt;-</span> <span class="cf">function</span>(id) {</span>
 <span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a>  <span class="fu">get_stats</span>(id)</span>
-<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a>} </span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a>}</span>
 <span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a></span>
-<span id="cb15-17"><a href="#cb15-17" tabindex="-1"></a><span class="co"># Get stats and convert results to data frame </span></span>
+<span id="cb15-17"><a href="#cb15-17" tabindex="-1"></a><span class="co"># Get stats and convert results to data frame</span></span>
 <span id="cb15-18"><a href="#cb15-18" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">lapply</span>(vid_ids, get_all_stats)</span>
 <span id="cb15-19"><a href="#cb15-19" tabindex="-1"></a>res_df <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(res, data.frame))</span>
 <span id="cb15-20"><a href="#cb15-20" tabindex="-1"></a></span>
@@ -534,13 +534,13 @@ OAuth Guide</a>.</p>
 <p>If you need to find a channel ID from a <code>username</code>, the
 <code>list_channel_resources</code> function can help. You can use it
 like:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">list_channel_resources</span>(<span class="at">filter =</span> <span class="fu">c</span>(<span class="at">username =</span> <span class="st">&quot;GoogleDevelopers&quot;</span>), <span class="at">part=</span><span class="st">&quot;id&quot;</span>)</span>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">list_channel_resources</span>(<span class="at">filter =</span> <span class="fu">c</span>(<span class="at">username =</span> <span class="st">&quot;GoogleDevelopers&quot;</span>), <span class="at">part =</span> <span class="st">&quot;id&quot;</span>)</span>
 <span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a></span>
 <span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="co"># Parse out channel_id</span></span>
-<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(res<span class="sc">$</span>items[[<span class="dv">1</span>]]<span class="sc">$</span>id)){</span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(res<span class="sc">$</span>items[[<span class="dv">1</span>]]<span class="sc">$</span>id)) {</span>
 <span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>  channel_id <span class="ot">&lt;-</span> res<span class="sc">$</span>items[[<span class="dv">1</span>]]<span class="sc">$</span>id</span>
 <span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>  <span class="fu">stop</span>(<span class="st">&quot;User not found&quot;</span>) </span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>  <span class="fu">stop</span>(<span class="st">&quot;User not found&quot;</span>)</span>
 <span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a>}</span>
 <span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a><span class="co"># channel_id should be UC_x5XG1OV2P6uZZ5FSM9Ttw</span></span></code></pre></div>
 <pre><code>##            id viewCount likeCount dislikeCount favoriteCount commentCount

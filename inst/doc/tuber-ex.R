@@ -22,30 +22,30 @@ knitr::opts_chunk$set(
 # ## Authentication complete.
 
 ## ----eval=FALSE, getstats-----------------------------------------------------
-# get_stats(video_id="N708P-A45D0")
+# get_stats(video_id = "N708P-A45D0")
 
 ## ----eval=FALSE, getdetails---------------------------------------------------
-# get_video_details(video_id="N708P-A45D0")
+# get_video_details(video_id = "N708P-A45D0")
 
 ## ----eval=FALSE, getcaptions--------------------------------------------------
-# get_captions(video_id="yJXTXN4xrI8")
+# get_captions(video_id = "yJXTXN4xrI8")
 
 ## ----eval=FALSE, searchvids---------------------------------------------------
 # res <- yt_search("Barack Obama")
 # head(res[, 1:3])
 
 ## ----eval=FALSE, get_comments-------------------------------------------------
-# res <- get_comment_threads(c(video_id="N708P-A45D0"))
+# res <- get_comment_threads(c(video_id = "N708P-A45D0"))
 # head(res)
 
 ## ----eval=FALSE, get_channel_vids_stats---------------------------------------
-# a <- list_channel_resources(filter = c(channel_id = "UCT5Cx1l4IS3wHkJXNyuj4TA"), part="contentDetails")
+# a <- list_channel_resources(filter = c(channel_id = "UCT5Cx1l4IS3wHkJXNyuj4TA"), part = "contentDetails")
 # 
 # # Uploaded playlists:
 # playlist_id <- a$items[[1]]$contentDetails$relatedPlaylists$uploads
 # 
 # # Get videos on the playlist
-# vids <- get_playlist_items(filter= c(playlist_id=playlist_id))
+# vids <- get_playlist_items(filter = c(playlist_id = playlist_id))
 # 
 # # Video ids
 # vid_ids <- as.vector(vids$contentDetails.videoId)
@@ -62,10 +62,10 @@ knitr::opts_chunk$set(
 # head(res_df)
 
 ## ----eval=FALSE---------------------------------------------------------------
-# res = list_channel_resources(filter = c(username = "GoogleDevelopers"), part="id")
+# res <- list_channel_resources(filter = c(username = "GoogleDevelopers"), part = "id")
 # 
 # # Parse out channel_id
-# if(!is.null(res$items[[1]]$id)){
+# if (!is.null(res$items[[1]]$id)) {
 #   channel_id <- res$items[[1]]$id
 # } else {
 #   stop("User not found")
