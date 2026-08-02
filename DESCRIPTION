@@ -1,7 +1,7 @@
 Package: tuber
 Title: Client for the YouTube API
-Version: 1.4.0
-Date: 2026-03-23
+Version: 1.4.1
+Date: 2026-08-02
 Language: en-US
 Authors@R: c(
     person("Gaurav", "Sood", , "gsood07@gmail.com", role = c("aut", "cre")),
@@ -22,15 +22,16 @@ Imports: askpass, checkmate, digest, dplyr, hms, httr, httr2, jsonlite,
         magrittr, mime, purrr, rlang (>= 1.1.0), tibble, tidyr,
         tidyselect, utils
 Suggests: config, future, ggplot2, knitr (>= 1.11), lintr, memoise,
-        promises, progress, rmarkdown, testthat (>= 3.0.0), xml2
+        promises, progress, rmarkdown, testthat (>= 3.1.7), xml2
 VignetteBuilder: knitr
 Encoding: UTF-8
-RoxygenNote: 7.3.3
+Config/testthat/edition: 3
+Config/roxygen2/version: 8.0.0
 NeedsCompilation: no
-Packaged: 2026-03-25 01:51:11 UTC; soodoku
+Packaged: 2026-08-02 22:34:38 UTC; soodoku
 Author: Gaurav Sood [aut, cre],
   Kate Lyons [ctb],
   John Muschelli [ctb]
 Maintainer: Gaurav Sood <gsood07@gmail.com>
 Repository: CRAN
-Date/Publication: 2026-03-25 04:00:03 UTC
+Date/Publication: 2026-08-02 22:50:02 UTC

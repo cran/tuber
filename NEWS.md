@@ -1,3 +1,50 @@
+# version 1.4.1
+
+## Bug fixes
+
+* `list_videocats()` and `list_guidecats()` appended the translated filter to
+  the query list as an unnamed element, so the query contained an unnamed
+  component. Both `httr` and `httr2` reject such a query ("All components of
+  query must be named"), so neither function could issue a request at all. The
+  filter is now merged by name, and `regionCode`/`id` reach the API.
+
+  Note for `list_guidecats()` specifically: Google deprecated the
+  `guideCategories` endpoint in September 2020 and it no longer returns data.
+  The request is now assembled correctly, but the method it targets is gone, so
+  this repairs the client rather than restoring the feature.
+
+* `get_live_streams()` accepted `channel_id` and required either that or
+  `stream_id`, then sent `channelId` alongside `broadcastStatus`.
+  `liveBroadcasts.list` has no `channelId` parameter and accepts exactly one of
+  `broadcastStatus`, `id` or `mine`, so a status-only query was impossible and
+  the combinations it did send were invalid. It now takes exactly one filter,
+  gains `mine`, and errors clearly on the rest.
+
+* `get_comments(simplify = TRUE)` assigned the first comment's id to every row,
+  because `raw_res$items[[1]]$id` is a scalar that R recycled over the frame.
+  Two comments came back carrying the same id and the second was lost. It also
+  sent `pageToken` and `maxResults` alongside a `comment_id` filter, which
+  `comments.list` documents as unsupported with `id`.
+
+* `list_videocats()` indexed its filter with `filter$regionCode`. `filter` is a
+  named character vector, so this raised "$ operator is invalid for atomic
+  vectors" on every call. `list_guidecats()` failed the same way when
+  assembling its result: with no items it raised "replacement has 1 row, data
+  has 0", and with items it returned a list rather than the documented
+  `data.frame`. Both now index by name and return a `data.frame` in every case.
+
+* `get_comments()` documented and validated a `page_token` argument but never
+  placed it in the query, so paging through replies with a `parent_id` filter
+  always returned the first page. It is now sent as `pageToken`.
+
+* `list_regions()` and `list_abuse_report_reasons()` documented and validated an
+  `hl` argument that never reached the query. Both `i18nRegions.list` and
+  `videoAbuseReportReasons.list` support `hl`, and the sibling `list_langs()`
+  already sent it. It is now sent.
+
+* `get_live_streams()` sent its `status` filter as `eventType`, which is a
+  `search.list` parameter. `liveBroadcasts.list` filters on `broadcastStatus`.
+
 # version 1.4.0
 
 ## Major API Coverage Enhancements (Closing the Gap)
